@@ -1,0 +1,49 @@
+﻿
+@{
+    ViewData["Title"] = "Index";
+    Layout = "_Layout";
+}
+
+<div class="row">
+    <div class="col">
+        <div class="card" style="margin: 20px;">
+            <div class="card-body">
+                <h5 class="card-title">Capitulo 1: Controlando el flujo de un programa</h5>
+                <h6 class="card-subtitle mb-2 text-muted">Tema 2: Manejar y administrar multihilos</h6>
+                <hr>
+                <p class="card-text">
+                    <h5>Cancelación de una tarea de larga ejecución</h5>
+                    <ul>
+                        <li>
+                            Al cubrir los hilos en la sección anterior, notamos que era posible que un hilo se abortara usando el método Abortar que se puede invocar en una instancia activa de Thread. En esta sección investigaremos cómo una aplicación puede detener una Tarea en ejecución.
+                        </li>
+                    </ul>
+                    <h6>El token de cancelación </h6>
+                    <ul>
+                        <li>
+                            Hay una diferencia importante entre los subprocesos y las tareas, ya que un subproceso puede abortarse en cualquier momento, mientras que una tarea debe monitorear un token de cancelación para que finalice cuando se le indique.
+                        </li>
+                        <li>
+                            El listado 1-49 muestra cómo se cancela una tarea. El método Reloj se ejecuta como una tarea y muestra un mensaje de "tic" cada medio segundo. El bucle dentro del método Clock está controlado por una instancia de la clase CancellationTokenSource. Esta instancia se comparte entre la tarea que ejecuta el reloj y el programa en primer plano. La instancia CancellationTokenSource expone una propiedad llamada IsCancellationRequested. Cuando esta propiedad se vuelve verdadera, el ciclo en el método Reloj se completa y la tarea finaliza. Esto significa que una tarea tiene la oportunidad de ordenar y liberar recursos cuando se le informa que se está cancelando.
+                        </li>
+                        <li>
+                            Si ejecuta el programa en el Listado 1-49, encontrará que el reloj continuará marcando hasta que presione una tecla y active la llamada del método Cancel en el objeto cancellationTokenSource.
+                        </li>
+                    </ul>
+                    <h6>Disparar una excepción cuando se cancela una tarea</h6>
+                    <ul>
+                        <li>
+                            Una tarea puede indicar que se ha cancelado al generar una excepción. Esto puede ser útil si una tarea se inicia en un lugar y se supervisa en otro. El siguiente método de reloj marca 20 veces y luego sale. Se suministra con una referencia CancellationToken como parámetro, que se prueba cada vez alrededor del ciclo de tick. Si la tarea se cancela, arroja una excepción.
+                        </li>
+                        <li>
+                            El Listado 1-50 muestra cómo se usa este método en una tarea. Se crea una instancia de CancellationTokenSource y el token de esta instancia se pasa a la tarea que ejecuta el método Clock. El método del reloj utiliza la variable tickCount para contar la cantidad de veces que ha dado la vuelta al ciclo de tick. Cuando tickCount llega a 20, se completa el método Reloj. Una instancia de tarea expone una propiedad IsCompleted que indica si una tarea se completa o no correctamente. Esta propiedad se prueba cuando el usuario presiona una tecla durante la ejecución del programa. Si se presiona una tecla antes de que se complete la tarea del reloj, la tarea del reloj se cancela. El método ThrowIfCancellationRequested se llama en el método Clock para lanzar una excepción si la tarea se ha cancelado. Esta excepción se captura y se muestra en el método principal.
+                        </li>
+                        <li>
+                            Este código requiere un estudio cuidadoso. Tenga en cuenta que si ejecuta el programa en Visual Studio y presiona una tecla para interrumpir el reloj, Visual Studio informará una excepción no controlada en el método Reloj. Si deja que el programa continúe, encontrará que alcanzará el controlador de excepciones en el método Principal. Esto sucede porque Visual Studio está detectando la excepción de cancelación y le está informando al respecto. Si el programa se ejecutara fuera de Visual Studio, como sería cuando un cliente lo utiliza, la excepción de cancelación no se detectaría y solo se ejecutaría el controlador de excepción para AggregateException.
+                        </li>
+                    </ul>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>

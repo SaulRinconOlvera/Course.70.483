@@ -1,0 +1,55 @@
+﻿
+@{
+    ViewData["Title"] = "Index";
+    Layout = "_Layout";
+}
+
+<div class="row">
+    <div class="col">
+        <div class="card" style="margin: 20px;">
+            <div class="card-body">
+                <h5 class="card-title">Capitulo 1: Controlando el flujo de un programa</h5>
+                <h6 class="card-subtitle mb-2 text-muted">Tema 2: Manejar y administrar multihilos</h6>
+                <hr>
+                <p class="card-text">
+                    <h5>Implementar métodos seguros de hilos para manejar condiciones de carrera</h5>
+                    <ul>
+                        <li>
+                            Un objeto puede proporcionar servicios a otros objetos exponiendo métodos para su uso. Si un objeto se va a utilizar en una aplicación de subprocesos múltiples, es importante que el método se comporte de forma segura para subprocesos. Thread safe significa que se puede invocar el método desde varias tareas simultáneamente sin producir resultados incorrectos y sin colocar el objeto del que es miembro en un estado no válido.
+                        </li>
+                    </ul>
+                    <h6>Seguridad de hilos y variables miembro</h6>
+                    <ul>
+                        <li>
+                            Has visto las dificultades que pueden causar las condiciones de carrera que aparecen cuando dos tareas usan una variable compartida. Sin bloqueo, el programa que intenta usar múltiples tareas para sumar el contenido de una matriz falla porque hay acceso no administrado al valor total compartido. Puede ver los mismos problemas que surgen cuando un método usa el valor de un miembro de un objeto.
+                        </li>
+                        <li>
+                            Considere la clase Counter en el Listado 1-51. Está destinado a usarse para recopilar valores y agregarlos a un valor total que los usuarios del objeto puedan leer. Funciona bien en una sola aplicación roscada. Sin embargo, en una aplicación que utiliza múltiples tareas, falla de la misma manera que el programa que se muestra en el Listado 1-42. Si varias tareas hacen uso del método IncreaseCounter al mismo tiempo, las condiciones de carrera provocan que se sobrescriban las actualizaciones de totalValue.
+                        </li>
+                        <li>
+                            Puede hacer que el programa calcule el resultado correcto utilizando una operación de enclavamiento para actualizar el miembro totalValue como se muestra en el Listado 1-42. El problema es que necesita saber que tiene que hacer esto. Ya ha visto lo fácil que es agregar tareas múltiples a una aplicación existente, pero asegúrese de que todos los objetos utilizados en la aplicación contengan código seguro para subprocesos. De lo contrario, la aplicación puede ser propensa al peor tipo de errores; aquellos que aparecen de forma esporádica e inconsistente en diferentes plataformas.
+                        </li>
+                        <li>
+                            Cualquier uso de un miembro de una clase debe ser seguro para subprocesos, y esto debe hacerse de una manera que no comprometa el rendimiento de subprocesos múltiples. Has visto cómo agregar bloqueos puede hacer que las cosas sean seguras, pero también viste cómo hacerlo incorrectamente puede empeorar el rendimiento. Esto puede significar que la creación de una implementación multitarea de un sistema implica una reescritura completa, con procesos refactorizados como productores o consumidores de datos.
+                        </li>
+
+                    </ul>
+                    <h6>
+                        Seguridad del hilo y parámetros del método
+                    </h6>
+                    <ul>
+                        <li>
+                            Los parámetros pasados ​​a un método por valor se entregan como copias de los datos que se proporcionaron en los argumentos de la llamada al método. Son únicos para esa llamada al método y no se pueden cambiar mediante el código que se ejecuta en ninguna otra tarea. Sin embargo, los objetos al final de los parámetros de referencia son susceptibles de cambio por el código que se ejecuta en otras tareas. Como ilustración de lo que puede salir mal, considere un método de fábrica llamado CreateCustomerFromRawData:
+                        </li>
+                        <li>
+                            El método CreateCustomerFromRawData valida la información de entrada contenida en una instancia de RawData y, si la información es correcta, crea un nuevo Cliente creado a partir de estos datos y lo devuelve. Sin embargo, si RawData es una referencia a un objeto, no hay nada que impida que otra tarea cambie el contenido de este objeto al mismo tiempo que se ejecuta el método CreateCustomer. Esto puede hacer que se cree una instancia del Cliente que contenga datos no válidos o inconsistentes y genere errores difíciles de rastrear.
+                        </li>
+                        <li>
+                            Hay dos formas de abordar este problema. El primero es hacer que el objeto RawData sea un tipo de estructura, que se pasará por valor a la llamada al método. El segundo método es crear una acción atómica que copie los datos entrantes en variables locales que son específicas de esa llamada del método. De cualquier manera, es importante considerar las ramificaciones de la ejecución paralela al crear métodos que acepten parámetros de referencia.
+                        </li>
+                    </ul>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,338 @@
+﻿@{
+    ViewData["Title"] = "Index";
+    Layout = "_Layout";
+}
+
+<div class="row">
+    <div class="col">
+        <div class="card" style="margin: 20px;">
+            <div class="card-body">
+                <h5 class="card-title">Capitulo 1: Controlando el flujo de un programa</h5>
+                <h6 class="card-subtitle mb-2 text-muted">Tema 1: Implementando multihilos y procesamiento asincrono</h6>
+                <hr>
+                <p class="card-text">
+                    <h5>Usar colecciones concurrentes</h5>
+                    <ul>
+                        <li>
+                            La frase <var>thread safe</var> describe elementos de código que funcionan correctamente cuando se usan desde múltiples procesos (tareas)
+                            al mismo tiempo. Las colecciones .NET estándar (incluidas <code>List</code>, <code>Queue</code> y <code>Dictionary</code>) no son seguras
+                            para subprocesos. Las bibliotecas .NET proporcionan clases de colección seguras para hilos (concurrentes) que puede usar al crear
+                            aplicaciones multitarea:
+                        </li>
+                        <li class="segundo">
+                            BlockingCollection&lt;T&gt;
+                        </li>
+                        <li class="segundo">
+                            ConcurrentQueue&lt;T&gt;
+                        </li>
+                        <li class="segundo">
+                            ConcurrentStack&lt;T&gt;
+                        </li>
+                        <li class="segundo">
+                            ConcurrentBag&lt;T&gt;
+                        </li>
+                        <li class="segundo">
+                            ConcurrentDictionary&lt;TKey, TValue&gt;
+                        </li>
+                    </ul>
+                    <h6>BlockingCollection&lt;T&gt;</h6>
+                    <ul>
+                        <li>
+                            Desde una perspectiva de diseño, es mejor ver una tarea en una aplicación multiproceso como productor o consumidor de datos.
+                            Una tarea que produce y consume datos es vulnerable a situaciones de "abrazo mortal". Si la tarea A está esperando algo producido por
+                            la tarea B, y la tarea B está esperando algo producido por la Tarea A, y ninguna tarea puede ejecutarse.
+                        </li>
+                        <li>
+                            La clase BlockingCollection &lt;T&gt; está diseñada para usarse en situaciones en las que tiene algunas tareas que producen datos y
+                            otras tareas que consumen datos. Proporciona un medio seguro para subprocesos de agregar y eliminar elementos a un almacén de datos.
+                            Se llama una colección de bloqueo porque una acción Tomar bloqueará una tarea si no hay elementos para realizar. Un desarrollador puede
+                            establecer un límite superior para el tamaño de la colección. Los intentos de agregar elementos a una colección completa también están
+                            bloqueados.
+                        </li>
+                        <li>
+                            El Listado 1-35 muestra cómo se usa una BlockingCollection. El programa crea un hilo que intenta agregar 10 elementos a una
+                            <code>BlockingCollection</code>, que se ha creado para contener cinco elementos.
+                            Después de agregar el quinto elemento, este hilo se bloquea. El programa también crea un hilo que saca elementos de la colección.
+                            Tan pronto como el hilo de lectura comience a ejecutarse y elimine algunos elementos de la colección, el hilo de escritura puede continuar.
+                        </li>
+
+                        <br />
+                        <span class="badge badge-secondary">Listado 1-35</span>&nbsp;Usando BlockingCollection
+                        <hr>
+
+<pre>
+using System;
+using System.Collections.Concurrent;
+using System.Threading.Tasks;
+
+namespace LISTING_1_35_Using_BlockingCollection
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            // Blocking collection that can hold 5 items
+            BlockingCollection<int> data = new BlockingCollection<int>(5);
+
+            Task.Run(() =>
+            {
+                // attempt to add 10 items to the collection - blocks after 5th
+                for(int i=0;i<11;i++) {
+                    data.Add(i);
+                    Console.WriteLine("Data {0} added sucessfully.", i);
+                }
+
+                // indicate we have no more to add
+                data.CompleteAdding();
+            });
+
+            Console.ReadKey();
+            Console.WriteLine("Reading collection");
+            Task.Run(()=>
+            {
+                while (!data.IsCompleted)
+                {
+                    try
+                    {
+                        int v = data.Take();
+                        Console.WriteLine("Data {0} taken sucessfully.", v);
+                    }
+                    catch (InvalidOperationException) { }
+                }
+            });
+            Console.ReadKey();
+        }
+    }
+}
+</pre>
+
+                        <li>
+                            El resultado de la ejecución de este programa se miraria algo asi como:
+                            <pre>
+Data 0 added successfully.
+Data 1 added successfully.
+Data 2 added successfully.
+Data 3 added successfully.
+Data 4 added successfully.
+Reading collection
+Data 0 taken successfully.
+Data 1 taken successfully.
+Data 2 taken successfully.
+Data 3 taken successfully.
+Data 4 taken successfully.
+Data 5 taken successfully.
+Data 5 added successfully.
+Data 6 added successfully.
+Data 7 added successfully.
+Data 8 added successfully.
+</pre>
+                        </li>
+                        <li>
+                            La tarea de agregar llama a <code>CompleteAdding</code> en la colección cuando ha agregado el último elemento.
+                            Esto evita que se agreguen más elementos a la colección. La tarea que se toma de la colección usa la propiedad <code>IsCompleted</code> de la colección
+                            para determinar cuándo dejar de tomar elementos de ella. La propiedad <code>IsCompleted</code> devuelve verdadero cuando la colección está vacía y se
+                            ha llamado a <code>CompleteAdding</code>. Tenga en cuenta que la operación <code>Take</code> se realiza dentro de la construcción
+                            <code>try– catch</code>. El método <code>Take</code> puede generar una excepción si se produce la siguiente secuencia:
+                        </li>
+                        <li class="segundo">
+                            La tarea de toma comprueba el indicador <code>IsCompleted</code> y descubre que es falso.
+                        </li>
+                        <li class="segundo">
+                            La tarea de agregar (que se ejecuta al mismo tiempo que la tarea de tomar) luego llama al método <code>CompleteAdding</code> en la colección.
+                        </li>
+                        <li class="segundo">
+                            La tarea de toma intenta realizar una toma de una colección que se ha marcado como completa.
+                        </li>
+                        <li>
+                            Tenga en cuenta que esto no indica un problema con la forma en que funciona <code>BlockingCollection</code>; en su lugar, muestra cómo
+                            debe tener cuidado al usar cualquier tipo de almacén de datos de múltiples tareas. La clase <code>BlockingCollection</code> proporciona
+                            los métodos <code>TryAdd</code> y <code>TryTake</code> que se pueden usar para intentar una acción. Cada uno devuelve verdadero si la
+                            acción tuvo éxito. Se pueden usar con valores de tiempo de espera y tokens de cancelación.
+                        </li>
+                        <li>
+                            La clase <code>BlockingCollection</code> puede actuar como un contenedor alrededor de otras clases de colección concurrentes,
+                            incluidas <code>ConcurrentQueue</code>, <code>ConcurrentStack</code> y <code>ConcurrentBag</code>.
+                            El listado 1-36 muestra cómo se hace esto. La clase de colección que se utilizará se proporciona como el primer parámetro del
+                            constructor <code>BlockingCollection</code>.
+                        </li>
+
+                        <br />
+                        <span class="badge badge-secondary">Listado 1-36</span>&nbsp;Bloqueo ConcurrentStack
+                        <hr>
+
+                        <pre>
+BlockingCollection<int> data = new BlockingCollection<int>(new <b>ConcurrentStack<int>()</b>, 5);
+</pre>
+
+                        <li>
+                            Si ejecuta este ejemplo, verá que los elementos se agregan y toman de la pila en una base de "último en entrar, primero en salir".
+                            Si no proporciona una clase de colección, la clase <code>BlockingCollection</code> utiliza un <code>ConcurrentQueue</code>, que opera
+                            en una base de "primero en entrar, primero en salir". La clase <code>ConcurrentBag</code> almacena artículos en una colección desordenada.
+                        </li>
+                    </ul>
+                    <h6>Cola concurrente</h6>
+                    <ul>
+                        <li>
+                            La clase <code>ConcurrentQueue</code> proporciona soporte para colas concurrentes. El método Enqueue agrega elementos a la cola y el
+                            método <code>TryDequeue</code> los elimina. Tenga en cuenta que, si bien se garantiza que el método <code>Enqueue</code> funciona
+                            (las colas pueden tener una longitud infinita), el método <code>TryDequeue</code> devolverá falso si la cola falla.
+                            Un tercer método, <code>TryPeek</code>, permite que un programa inspeccione el elemento al comienzo de la cola sin eliminarlo.
+                            Tenga en cuenta que incluso si el método <code>TryPeek</code> devuelve un elemento, una llamada posterior del método
+                            <code>TryDequeue</code> en la misma tarea al eliminar ese elemento de la cola fallaría si el elemento es eliminado por otra tarea.
+                            El Listado 1-37 muestra cómo se usa una cola concurrente. Coloca dos cadenas en la cola, mira la parte superior de la cola y luego
+                            elimina un elemento de ella.
+                        </li>
+                        <li>
+                            Es posible que una tarea enumere una cola simultánea (un programa puede usar la construcción foreach para trabajar en cada elemento de la
+                            cola). Al comienzo de la enumeración, una cola concurrente proporcionará una instantánea de los contenidos de la cola.
+                            Cuando este programa se ejecuta, imprime "Rob", porque ese es el elemento al comienzo de la cola; y una cola es un almacén de datos
+                            primero en entrar, primero en salir.
+                        </li>
+
+                        <br />
+                        <span class="badge badge-secondary">Listado 1-37</span>&nbsp;Cola concurrente
+                        <hr>
+
+                        <pre>
+ConcurrentStack<string> stack = new ConcurrentStack<string>();
+
+stack.Push("Rob");
+stack.Push("Miles");
+string str;
+
+if (stack.TryPeek(out str))
+    Console.WriteLine("Peek: {0}", str);
+
+if (stack.TryPop(out str))
+    Console.WriteLine("Pop: {0}", str);
+
+Console.ReadKey();
+</pre>
+
+
+                    </ul>
+                    <h6>Pila concurrente</h6>
+                    <ul>
+                        <li>
+                            La clase <code>ConcurrentStack</code> proporciona soporte para pilas concurrentes. El método <code>Push</code> agrega elementos a la pila
+                            y el método <code>TryPop</code> los elimina. También hay métodos, <code>PushRange</code> y <code>TryPopRange</code>, que se pueden usar
+                            para empujar o reventar varios elementos. El Listado 1-38 muestra cómo se usa un <code>ConcurrentStack</code>.
+                        </li>
+
+                        <br />
+                        <span class="badge badge-secondary">Listado 1-38</span>&nbsp;Pila concurrente
+                        <hr>
+
+                        <pre>
+ConcurrentStack<string> stack = new ConcurrentStack<string>();
+
+stack.Push("Rob");
+stack.Push("Miles");
+
+string str;
+if (stack.TryPeek(out str))
+    Console.WriteLine("Peek: {0}", str);
+
+if (stack.TryPop(out str))
+    Console.WriteLine("Pop: {0}", str);
+
+Console.ReadKey();
+</pre>
+
+                        <li>
+                            Cuando se ejecuta este programa, imprime "Millas", porque está en la parte superior de la pila y la pila es un almacén de datos de
+                            último en entrar, primero en salir.
+                        </li>
+                    </ul>
+                    <h6>Bolsa concurrente</h6>
+                    <ul>
+                        <li>
+                            Puede usar un <code>ConcurrentBag</code> para almacenar artículos cuando el orden en que se agregan o eliminan no es importante.
+                            La opción Agregar elementos coloca las cosas en la bolsa y el método <code>TryTake</code> las elimina. También hay un método
+                            <code>TryPeek</code>, pero esto es menos útil en un <code>ConcurrentBag</code> porque es posible que el siguiente método
+                            <code>TryTake</code> devuelva un artículo diferente de la bolsa. El Listado 1-39 muestra cómo se usa un <code>ConcurrentBag</code>.
+                        </li>
+
+                        <br />
+                        <span class="badge badge-secondary">Listado 1-39</span>&nbsp;Bolsa concurrente
+                        <hr>
+
+                        <pre>
+ConcurrentBag<string> bag = new ConcurrentBag<string>();
+
+bag.Add("Rob");
+bag.Add("Miles");
+bag.Add("Hull");
+
+string str;
+if (bag.TryPeek(out str))
+    Console.WriteLine("Peek: {0}", str);
+
+if (bag.TryTake(out str))
+    Console.WriteLine("Take: {0}", str);
+</pre>
+                        <li>
+                            Cuando ejecute este programa en el Listado 1-39, imprimió la palabra "Hull", pero no hay garantía de que lo hará cuando lo ejecute,
+                            especialmente si varias tareas están usando <code>ConcurrentBag</code>.
+                        </li>
+                    </ul>
+                    <h6>Diccionario concurrente</h6>
+                    <ul>
+                        <li>
+                            Un diccionario proporciona un almacén de datos indexado por una clave. Un <code>ConcurrentDictionary</code> puede ser utilizado por
+                            múltiples tareas concurrentes. Las acciones en el diccionario se realizan de manera atómica. En otras palabras, una acción de
+                            actualización en un elemento del diccionario no puede ser interrumpida por una acción de otra tarea. Un <code>ConcurrentDictionary</code>
+                            proporciona algunos métodos adicionales que se requieren cuando un diccionario se comparte entre múltiples tareas.
+                            El listado 1-40 muestra cómo se usan.
+                        </li>
+
+                        <br />
+                        <span class="badge badge-secondary">Listado 1-40</span>&nbsp;Diccionario concurrente
+                        <hr>
+
+                        <pre>
+ConcurrentDictionary<string, int> ages = new ConcurrentDictionary<string, int>();
+
+if (ages.TryAdd("Rob", 21))
+    Console.WriteLine("Rob added successfully.");
+
+Console.WriteLine("Rob's age: {0}", ages["Rob"]);
+
+// Set Rob's age to 22 if it is 21
+if (ages.TryUpdate("Rob", 22, 21))
+    Console.WriteLine("Age updated successfully");
+
+Console.WriteLine("Rob's new age: {0}", ages["Rob"]);
+
+// Increment Rob's age atomically using factory method
+Console.WriteLine("Rob's age updated to: {0}",
+
+ages.AddOrUpdate("Rob", 1, (name,age) => age = age+1));
+Console.WriteLine("Rob's new age: {0}", ages["Rob"]);
+</pre>
+                        <li>
+                            El método <code>TryAdd</code> intenta agregar un nuevo elemento. Si el elemento ya existe, el método <code>TryAdd</code> devuelve falso.
+                            El método <code>TryUpdate</code> se suministra con la clave que identifica el elemento que se actualizará y dos valores.
+                            El primer valor proporciona un nuevo valor que se almacenará en el elemento, y el segundo valor proporciona el valor que se sobrescribirá.
+                            En el ejemplo anterior, la antigüedad del elemento indexado por “Rob” solo se actualizará a 22 si el valor existente es 21.
+                            Esto permite que un programa solo actualice un elemento si está en el valor esperado.
+                        </li>
+                        <li>
+                            Quizás te preguntes cuándo es útil. Considere una situación en la que dos procesos deciden que el valor de la edad de una persona en el
+                            diccionario debe aumentarse de 21 a 22. Si ambos procesos avanzan y aumentan el valor de la edad, eso significaría que la edad terminaría
+                            siendo 23, que es incorrecto. En cambio, cada proceso podría usar el método <code>TryUpdate</code> para tratar de aumentar la edad.
+                            Un proceso tendrá éxito y cambiará el valor de edad a 22. El otro proceso fallará, porque no está actualizando una edad que es 21.
+                        </li>
+                        <li>
+                            El método <code>AddOrUpdate</code> le permite proporcionar un comportamiento que realizará la actualización de un elemento determinado o
+                            agregará un elemento nuevo si aún no existe. En el caso del ejemplo anterior, la edad del elemento "Rob" no se establecerá en 1 por la
+                            llamada de <code>AddOrUpdate</code>, porque el elemento ya existe. En cambio, se realiza la acción, lo que aumenta la edad del elemento
+                            "Rob" en 1. Esta acción puede considerarse como atómica, ya que no se realizarán otras acciones en este elemento hasta que se haya
+                            completado el comportamiento de actualización.
+                        </li>
+                    </ul>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>

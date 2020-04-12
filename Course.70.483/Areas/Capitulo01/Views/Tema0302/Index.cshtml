@@ -1,0 +1,203 @@
+﻿
+@{
+    ViewData["Title"] = "Index";
+    Layout = "_Layout";
+}
+
+<div class="row">
+    <div class="col">
+        <div class="card" style="margin: 20px;">
+            <div class="card-body">
+                <h5 class="card-title">Capitulo 1: Controlando el flujo de un programa</h5>
+                <h6 class="card-subtitle mb-2 text-muted">Tema 3: Implementar flujos de programa</h6>
+                <hr>
+                <p class="card-text">
+                    <h5>Decisiones en programas</h5>
+                    <ul>
+                        <li>
+                            A medida que se ejecuta un programa, puede tomar decisiones. Hay dos construcciones de programa que se pueden usar para ejecutar
+                            código condicionalmente: la construcción if y la construcción switch.
+                        </li>
+                    </ul>
+                    <h6>La construcción if</h6>
+                    <ul>
+                        <li>
+                            Una construcción if permite el uso de una expresión lógica para controlar la ejecución de una declaración o bloque de código.
+                            Una expresión lógica es aquella que evalúa el valor booleano verdadero o el valor booleano falso. Cuando la expresión lógica es verdadera,
+                            se obedece el enunciado. Una construcción if puede tener un elemento else que contenga código que se ejecutará cuando la expresión
+                            booleana se evalúe como falsa. El código en el Listado 1-60 muestra cómo funciona esto.
+                        </li>
+                        <li>
+                            El elemento else de una construcción if es opcional. Es posible "anidar" si las construcciones están una dentro de la otra.
+                        </li>
+                        <li>
+                            No todo si se requiere que las construcciones tengan elementos else. Nunca hay confusión acerca de a qué condición se une una determinada
+                            persona, ya que siempre es la "más cercana". Si desea modificar este enlace, puede usar llaves para forzar diferentes enlaces, como puede
+                            ver aquí. Tenga en cuenta que la sangría también ayuda a mostrar al lector las declaraciones de código que están controladas por cada parte
+                            de la construcción if.
+                        </li>
+                    </ul>
+                    <h6> Expresiones lógicas</h6>
+                    <ul>
+                        <li>
+                            Una expresión lógica se evalúa como un valor lógico, que es verdadero o falso. Hemos visto que verdadero y falso son valores literales
+                            booleanos y pueden usarse en condiciones, aunque esto no es muy útil. Una expresión lógica puede contener operadores utilizados para
+                            comparar valores. Los operadores relacionales se utilizan para comparar dos valores (ver Tabla 1-1).
+
+                            <br />
+                            <br />
+                            TABLA 1-1 Operadores relacionales
+                            <br />
+                            <table class="table table-sm">
+                                <thead>
+                                    <tr class="table-active">
+                                        <th scope="col" class="text-center">Nombre</th>
+                                        <th scope="col" class="text-center">Operador</th>
+                                        <th scope="col" class="text-center">Comportamiento</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Menor que</td>
+                                        <td class="text-center">&lt;</td>
+                                        <td>Verdadero si el operando de la izquierda es menor que el operando de la derecha</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Mayor que</td>
+                                        <td class="text-center">&gt;</td>
+                                        <td>Verdadero si el operando de la izquierda es mayor que el operando de la derecha</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Menor o igual a</td>
+                                        <td class="text-center">&lt;=</td>
+                                        <td>Verdadero si el operando de la izquierda es menor o igual que el operando de la derecha</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Mayor o igual a</td>
+                                        <td class="text-center">&gt;=</td>
+                                        <td>Verdadero si el operando de la izquierda es mayor o igual que el operando de la derecha</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </li>
+                        <li>
+                            Los operadores relacionales se pueden usar entre variables numéricas y cuerdas En el contexto de una cadena, menor y mayor que se
+                            evalúan alfabéticamente, como en "Abbie" es menor que "Allen".
+                            Un programa puede usar operadores de igualdad para comparar la igualdad (ver Tabla 1-2).
+
+                            <br />
+                            <br />
+                            TABLA 1-2 Operadores de igualdad
+                            <br />
+                            <table class="table table-sm">
+                                <thead>
+                                    <tr class="table-active">
+                                        <th scope="col" class="text-center">Nombre</th>
+                                        <th scope="col" class="text-center">Operador</th>
+                                        <th scope="col" class="text-center">Comportamiento</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Igual a</td>
+                                        <td class="text-center">==</td>
+                                        <td>Verdadero si el operando de la izquierda es igual al operando de la derecha</td>
+                                    </tr>
+                                    <tr>
+                                        <td>No es igual a</td>
+                                        <td class="text-center">!=</td>
+                                        <td>Verdadero si el operando de la izquierda no es igual al operando de la derecha</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </li>
+                        <li>
+                            Estos se puede usar entre variables numéricas y cadenas, pero no se deben usar al probar valores de coma flotante (flotante y doble) ya que
+                            la naturaleza del almacenamiento de números en una computadora significa que los valores de estos tipos no se mantienen exactamente.
+                            Un programa no debe probar para ver si dos valores de coma flotante son iguales, sino que debe restar uno del otro y determinar si el valor
+                            absoluto del resultado es menor que un valor de tolerancia dado.
+                        </li>
+                        <li>
+                            Los valores lógicos se pueden combinar mediante operadores lógicos (consulte la Tabla 1-3).
+
+                            <br />
+                            <br />
+                            TABLA 1-3 Operadores lógicos
+                            <br />
+                            <table class="table table-sm">
+                                <thead>
+                                    <tr class="table-active">
+                                        <th scope="col" class="text-center">Nombre</th>
+                                        <th scope="col" class="text-center">Operador</th>
+                                        <th scope="col" class="text-center">Comportamiento</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Y</td>
+                                        <td class="text-center">&</td>
+                                        <td>Verdadero si el operando de la izquierda y el de la derecha son verdaderos</td>
+                                    </tr>
+                                    <tr>
+                                        <td>O</td>
+                                        <td class="text-center">|</td>
+                                        <td>Verdadero si el operando de la izquierda o el operando de la derecha (o ambos) es/son verdaderos</td>
+                                    </tr>
+                                    <tr>
+                                        <td>O Exclusivo</td>
+                                        <td class="text-center">^</td>
+                                        <td>Verdadero si el operando de la izquierda no es lo mismo que el operando de la derecha</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </li>
+                        <li>
+                            El & y | los operadores tienen versiones condicionales: && y ||. Estos solo se evalúan hasta que se pueda determinar si el resultado de
+                            la expresión es verdadero o falso. En el caso de &&, si el primer operando es falso, el programa no evaluará el segundo operando ya que
+                            ya está establecido que el resultado de la expresión es falso. En el caso de ||, si el primer operando es verdadero, el segundo operando
+                            no será evaluado ya que ya está establecido que el resultado de la expresión es verdadero. Esto también se conoce como cortocircuito en la
+                            evaluación de la expresión. El listado 1-61 muestra cómo funciona esto. Contiene métodos instrumentados que se llaman durante la evaluación
+                            de la expresión.
+                        </li>
+                        <li>
+                            Cuando se ejecuta el programa, solo genera un mensaje del método mOne. El método mTwo nunca se llama, aunque esté en la expresión.
+                            Esto se debe a que la condición que involucra el valor devuelto por mOne se evalúa como falso, lo que significa que no es necesario llamar
+                            a mTwo. Es una práctica estándar usar las versiones condicionales de los operadores lógicos porque puede mejorar el rendimiento del
+                            programa. Si los métodos llamados en las expresiones lógicas tienen efectos secundarios (lo cual es una mala práctica de programación),
+                            puede causar fallas dependientes de los datos.
+                        </li>
+                    </ul>
+                    <h6> La expresión <code>switch</code></h6>
+                    <ul>
+                        <li>
+                            La expresion swtich permite que un programa use un valor para seleccionar una de varias opciones diferentes. Reemplaza una secuencia 
+                            larga de construcciones if – then – else que de otro modo serían necesarias. La palabra clave de cambio es seguida por una expresión 
+                            que controla el cambio. En tiempo de ejecución, el programa buscará un valor coincidente en una cláusula de caso particular, que identifica 
+                            el código que se ejecutará para ese valor. El código controlado por el caso continúa hasta una declaración de interrupción, que marca el 
+                            final de esa cláusula. Un conmutador puede contener una cláusula predeterminada, que identifica una cláusula que se realizará si el valor 
+                            de control no coincide con ningún caso.
+                        </li>
+                        <li>
+                            El listado 1-62 muestra cómo se usa la construcción del interruptor. El usuario especifica cuál de los tres comandos desea invocar 
+                            ingresando un número. Si no hay un comando coincidente para el valor que ingresa el usuario, el programa imprime un mensaje.
+                        </li>
+                        <li>
+                            La expresión switch activará caracteres, cadenas y valores enumerados, y es posible agrupar casos, como se muestra en el Listado 1-63, 
+                            que permite al usuario seleccionar un comando ingresando una cadena. Tenga en cuenta que la cadena que se ingresa se convierte en 
+                            minúsculas, y que se pueden usar tanto una forma larga (guardar) como una forma corta de los comandos.
+                        </li>
+                        <li>
+                            En C#, no está permitido que un programa "falle" desde el final de una cláusula de caso a otro. Cada cláusula debe terminar explícitamente 
+                            con una pausa, una devolución o por el programa lanzando una excepción.
+                        </li>
+                        <li>
+                            Las instrucciones switch son un buen ejemplo de una función de C# "de lujo" en el sentido de que en realidad no hacen posible algo que 
+                            no pueda hacer de otra manera. Puede crear programas de C # sin usar ninguna instrucción de cambio, pero facilitan la creación de código 
+                            que selecciona un comportamiento en función del valor en una variable de control.
+                        </li>
+                    </ul>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,92 @@
+﻿@{
+    ViewData["Title"] = "Index";
+    Layout = "_Layout";
+}
+
+
+<div class="row">
+    <div class="col">
+        <div class="card" style="margin: 20px;">
+            <div class="card-body">
+                <h5 class="card-title">Capitulo 1: Controlando el flujo de un programa</h5>
+                <h6 class="card-subtitle mb-2 text-muted">Tema 1: Implementando multihilos y procesamiento asincrono</h6>
+                <hr>
+                <p class="card-text">
+                    <h5>Grupos de hilos (Thread pools)</h5>
+                    <ul>
+                        <li>
+                            Los hilos, como todo lo demás en C#, se administran como objetos. Si una aplicación crea una gran cantidad de hilos,
+                            cada uno de estos requerirá que se cree un objeto y luego se destruya cuando se complete el hilo. Un grupo de hilos almacena una
+                            colección de objetos de hilos reutilizables. En lugar de crear una nueva instancia de un hilo, una aplicación puede solicitar que
+                            se ejecute un proceso en un hilo del grupo de hilos. Cuando se completa el hilo, este se devuelve al grupo para que lo use otro
+                            proceso. El listado 1-28 muestra cómo funciona esto. <code>ThreadPool</code> proporciona un método <code>QueueUserWorkItem</code>,
+                            que asigna un hilo para ejecutar el elemento de trabajo suministrado.
+                        </li>
+                        <br />
+                        <span class="badge badge-secondary">Listado 1-28</span>&nbsp;Grupo de hilos
+                        <hr>
+
+<pre>
+using System;
+using System.Threading;
+
+namespace LISTING_1_28_Thread_pool
+{
+    class Program
+    {
+        static void DoWork(object state)
+        {
+            Console.WriteLine("Doing work: {0}", state);
+            Thread.Sleep(500);
+            Console.WriteLine("Work finished: {0}", state);
+        }
+
+        static void Main(string[] args)
+        {
+            for (int i = 0; i < 50; i++)
+            {
+                int stateNumber = i;
+                ThreadPool.QueueUserWorkItem(state => DoWork(stateNumber));
+            }
+
+            Console.ReadKey();
+        }
+    }
+}
+</pre>
+                        <li>
+                            El item de trabajo se suministra como un delegado de <code>WaitCallback</code>. Hay dos versiones de este delegado.
+                            La versión utilizada en el Listado 1-28 acepta un objeto de estado que se puede utilizar para proporcionar información de
+                            estado al subproceso que se iniciará. La otra versión de <code>WaitCallback</code> no acepta información de estado.
+                        </li>
+                    </ul>
+                    <ul>
+                        <li>
+                            Si ejecuta el programa de ejemplo en el Listado 1-28, descubre que no todos los hilos se inician al mismo tiempo. 
+                            <code>ThreadPool</code> restringe el número de subprocesos activos y mantiene una cola de subprocesos en espera 
+                            de ejecución. Un programa que crea una gran cantidad de hilos individuales puede abrumar fácilmente un 
+                            dispositivo. Sin embargo, esto no sucede si se usa un <code>ThreadPool</code>.
+                            Los hilos adicionales se colocan en la cola. Tenga en cuenta que hay algunas situaciones en las que usar 
+                            <code>ThreadPool</code> no es una buena idea:
+                        </li>
+                        <li class="segundo">
+                            Si crea una gran cantidad de hilos que pueden estar inactivos durante mucho tiempo, esto puede bloquear 
+                            <code>ThreadPool</code>, porque <code>ThreadPool</code> solo contiene un número finito de hilos.
+                        </li>
+                        <li class="segundo">
+                            No puede administrar la prioridad de los hilos en <code>ThreadPool</code>.
+                        </li>
+                        <li class="segundo">
+                            Los subprocesos en <code>ThreadPool</code> tienen prioridad de fondo. No puede obtener un subproceso con 
+                            prioridad de primer plano del <code>ThreadPool</code>.
+                        </li>
+                        <li class="segundo">
+                            Las variables de estado locales no se borran cuando se reutiliza un hilo <code>ThreadPool</code>. Por lo tanto, no deben usarse.
+                        </li>
+                    </ul>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+

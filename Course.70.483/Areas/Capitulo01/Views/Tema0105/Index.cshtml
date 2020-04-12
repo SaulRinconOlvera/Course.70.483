@@ -1,0 +1,184 @@
+﻿@{
+    ViewData["Title"] = "Index";
+    Layout = "_Layout";
+}
+
+<div class="row">
+    <div class="col">
+        <div class="card" style="margin: 20px;">
+            <div class="card-body">
+                <h5 class="card-title">Capitulo 1: Controlando el flujo de un programa</h5>
+                <h6 class="card-subtitle mb-2 text-muted">Tema 1: Implementando multihilos y procesamiento asincrono</h6>
+                <hr>
+                <p class="card-text">
+                    <h5>Usando <var>async</var> y <var>await</var></h5>
+                    <ul>
+                        <li>
+                            Una tarea es una forma muy útil de hacer las cosas. Proporciona un medio por el cual un programa puede particionar y enviar elementos
+                            de trabajo. Las tareas son particularmente útiles si un programa tiene algo más que puede hacer mientras se realiza una tarea determinada.
+                            Por ejemplo, una interfaz de usuario puede continuar respondiendo a las acciones del usuario mientras se completa una tarea en segundo
+                            plano de larga ejecución, o un servidor web puede crear tareas para reunir respuestas a las solicitudes de la página web. Las tareas
+                            son particularmente útiles cuando se realizan acciones que pueden tardar un tiempo en completarse, por ejemplo, con solicitudes de
+                            entrada/salida o de red. Si una tarea está esperando que se cargue un archivo desde un disco, otra tarea puede ser ensamblar un mensaje
+                            para enviarlo a través de la red.
+                        </li>
+                        <li>
+                            Una dificultad con las tareas es que pueden ser difíciles de manejar para el programador. La aplicación debe contener código para crear
+                            la Tarea e iniciar su ejecución, por lo que la aplicación debe contener algún medio por el cual el código que realiza la Tarea pueda
+                            comunicar que ha finalizado. Si alguna de las acciones que se realizan puede generar excepciones, estas deben capturarse y devolverse a
+                            la aplicación.
+                        </li>
+                        <li>
+                            Las palabras clave <code>async</code> y <code>await</code> permiten a los programadores escribir elementos de código que se ejecutan de
+                            forma asincrónica. La palabra clave <code>async</code> se usa para marcar un método como "asíncrono". Un método asíncrono debe contener
+                            una o más acciones que están "en espera".
+                        </li>
+                        <li>
+                            Se puede esperar una acción si devuelve una Tarea (solo quiero hacer algo de forma asíncrona) o un Tarea&lt;T&gt; (Quiero hacer algo asíncrono
+                            que devuelva un resultado de un tipo particular).
+                        </li>
+                        <li>
+                            El método <code>asyncComputeAverages</code> a continuación devuelve una tarea en lugar de un resultado. La tarea devuelve un valor doble,
+                            que es el promedio calculado. Puede considerar el método como un "contenedor" alrededor del método original, que crea una tarea que ejecuta
+                            el método y entrega el resultado.
+                        </li>
+                        <br />
+
+<pre>
+private Task<double> asyncComputeAverages(long noOfValues)
+{
+    return Task<double>.Run(() =>
+    {
+        return computeAverages(noOfValues);
+    });
+}
+</pre>
+
+                        <li>
+                            El método <code>StartButton_Click</code> en el Listado 1-32 a continuación utiliza el método <code>asyncComputeAverages</code> para
+                            calcular el valor promedio y luego mostrar el resultado en <code>ResultTextBlock</code>.
+                            Cuando el usuario presiona el botón, el controlador de eventos vuelve instantáneamente. Luego, después de un breve intervalo,
+                            <code>ResultTextBlock</code> muestra el valor promedio.
+                        </li>
+                        <br />
+                        <span class="badge badge-secondary">Listado 1-32</span>&nbsp;Usando async
+                        <hr>
+
+                        <pre>
+private async void StartButton_Click(object sender, RoutedEventArgs e)
+{
+    long noOfValues = long.Parse(NumberOfValuesTextBox.Text);
+    ResultTextBlock.Text = "Calculating";
+    double result = await (asyncComputeAverages(noOfValues));
+
+    ResultTextBlock.Text = "Result: " + result.ToString();
+}
+</pre>
+
+                        <li>
+                            ¿Entonces, cómo funciona esto? El método del controlador de eventos StartButton_Click está marcado como asíncrono. Esto le dice al 
+                            compilador que trate este método como especial. Significa que el método contendrá uno o más usos de la palabra clave wait. La palabra 
+                            clave await representa "una declaración de intenciones" para realizar una acción. La palabra clave precede a una llamada de un método 
+                            que devolverá la tarea a realizar. El compilador generará código que hará que el método asíncrono regrese a la persona que llama en el 
+                            punto en que se alcanza la espera. Luego generará código que realizará la acción esperada de forma asincrónica y luego continuará con el 
+                            cuerpo del método asíncrono.
+                        </li>
+                        <li>
+                            En el caso del método Button_Click en el Listado 1-32, esto significa que el resultado se muestra al completar la tarea devuelta por 
+                            <code>asyncComputeAverages</code>. El código no bloquea la interfaz de usuario cuando se ejecuta, la pantalla se actualiza en el hilo 
+                            correcto (el controlador de eventos original) y es muy fácil de usar.
+                        </li>
+                    </ul>
+                    <h5>Excepciones en <var>async</var> y <async>await</async></h5>
+                    <ul>
+                        <li>
+                            La Figura 1-3 muestra una sencilla aplicación universal de Windows que se puede usar para ver el texto en una página web.
+                        </li>
+                        <li>
+                            La aplicación utiliza un método asincrónico de la biblioteca .NET para recuperar una página web de una URL determinada:
+                        </li>
+                        <br />
+                        <pre>
+private async Task<string> FetchWebPage(string url)
+{
+    HttpClient httpClient = new HttpClient();
+    return await httpClient.GetStringAsync(url);
+}
+</pre>
+                        <li>
+                            El acto de cargar una página web puede fallar porque el servidor está fuera de línea o la URL es incorrecta.
+                            El método <code>FetchWebPage</code> arrojará una excepción en esta situación.
+                            El listado 1-33 muestra cómo se usa esto.
+                            La espera ahora está encerrada en una construcción de prueba y captura.
+                            Si se lanza una excepción durante la espera, puede ser atrapada y tratada.
+                            En el caso del código en el Listado 1-33, <code>StatusTextBlock</code> se usa para mostrar el mensaje de la excepción.
+                        </li>
+                        <br />
+                        <span class="badge badge-secondary">Listado 1-33</span>&nbsp;Excepciones y async
+                        <hr>
+
+                        <pre>
+private async void Button_Click(object sender, RoutedEventArgs e)
+{
+    try
+    {
+        ResultTextBlock.Text = await FetchWebPage(URLTextBox.Text);
+        StatusTextBlock.Text = "Page Loaded";
+    }
+    catch (Exception ex)
+    {
+        StatusTextBlock.Text = ex.Message;
+    }
+}
+</pre>
+
+                        <li>
+                            Es muy importante tener en cuenta que las excepciones solo se pueden detectar de esta manera porque el método <code>FetchWebPage</code>
+                            devuelve un resultado; El texto de la página web. Es posible crear un método asíncrono de tipo void que no devuelva un valor. 
+                            Sin embargo, deben evitarse ya que no hay forma de detectar las excepciones que generan. Los únicos métodos anulados asíncronos que un 
+                            programa debe contener son los controladores de eventos en sí, como el método <code>Button_Click</code> en el Listado 1-33. 
+                            Incluso un método que solo realiza una acción debería devolver un valor de estado para que se puedan detectar y tratar las excepciones.
+                        </li>
+                    </ul>
+                    <h5>Esperando por tareas paralelas</h5>
+                    <ul>
+                        <li>
+                            Un método asíncrono puede contener varias acciones esperadas. Estos se completarán en secuencia.
+                            En otras palabras, si desea crear una tarea "en espera" que regrese cuando se hayan completado varias tareas paralelas,
+                            puede usar el método <code>Task.WhenAll</code> para crear una tarea que se complete cuando se hayan completado una lista de tareas.
+                            El listado 1-34 muestra cómo funciona esto. La tarea que devuelve <code>FetchWebPages</code> utiliza el
+                            método <code>FetchWebPage</code> del Listado 1-32 para generar una lista de cadenas que contienen el texto de una lista dada de URL.
+                            El método <code>Task.WhenAll</code> recibe una lista de tareas y devuelve una colección que contiene sus resultados
+                            cuando se han completado.
+                        </li>
+                        <br />
+                        <span class="badge badge-secondary">Listado 1-34</span>&nbsp;Esperando por tareas paralelas
+                        <hr>
+
+                        <pre>
+static async Task<IEnumerable<string>> FetchWebPages(string [] urls)
+{
+    var tasks = new List<Task<String>>();
+
+    foreach (string url in urls)
+    {
+        tasks.Add(FetchWebPage(url));
+    }
+
+    return await Task.WhenAll(tasks);
+}
+</pre>
+                        <li>
+                            Tenga en cuenta que el Listado 1-34 muestra cómo se utiliza <code>WhenAll</code>, pero no necesariamente
+                            muestra una buena práctica de programación. El orden de los elementos en la colección devuelta puede no
+                            coincidir con el orden de los nombres de sitio enviados y no hay agregación de ninguna excepción lanzada por
+                            las llamadas a <code>FetchWebPage</code>. También hay un método <code>WhenAny</code> que regresará cuando se
+                            complete cualquiera de las tareas dadas. Esto funciona de la misma manera que el método <code>WaitAny</code>
+                            que viste anteriormente.
+                        </li>
+                    </ul>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>

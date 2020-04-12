@@ -1,0 +1,600 @@
+﻿@{
+    ViewData["Title"] = "Index";
+    Layout = "_Layout";
+}
+
+<div class="row">
+    <div class="col">
+        <div class="card" style="margin: 20px;">
+            <div class="card-body">
+                <h5 class="card-title">Capitulo 1: Controlando el flujo de un programa</h5>
+                <h6 class="card-subtitle mb-2 text-muted">Tema 1: Implementando multihilos y procesamiento asincrono</h6>
+                <hr>
+                <p class="card-text">
+                    <h5>Tareas de continuación</h5>
+                    <ul>
+                        <li>
+                            Se puede nominar una tarea de continuación para comenzar cuando finaliza una tarea existente (la tarea antecedente).
+                            Si la tarea antecedente produce un resultado, se puede suministrar como entrada para la tarea de continuación.
+                            Las tareas de continuación se pueden utilizar para crear una "tubería" de operaciones, con cada etapa sucesiva comenzando cuando termina la anterior.
+                        </li>
+                    </ul>
+                    <h6>Crear una tarea de continuación</h6>
+                    <ul>
+                        <li>
+                            El Listado 1-15 muestra cómo se puede crear una tarea de continuación a partir de una tarea.
+                            Un objeto Task expone un método ContinueWith que se puede usar para especificar una tarea de continuación.
+                            La expresión lambda que ejecuta la tarea de continuación se proporciona con una referencia a la tarea antecedente, que puede usar para determinar si el antecedente se completó con éxito.
+                            Puede agregar tareas de continuación a las tareas que entregan un resultado, en cuyo caso la tarea de continuación puede usar la propiedad Resultado de la tarea antecedente para obtener sus datos de entrada.
+                        </li>
+
+                        <br />
+                        <span class="badge badge-secondary">Listado 1-15</span>&nbsp;Tarea de continuación
+                        <hr>
+
+<pre>
+using System;
+using System.Threading;
+using System.Threading.Tasks;
+
+namespace LISTING_1_15_Continuation_tasks
+{
+    class Program
+    {
+        public static void HelloTask()
+        {
+            Thread.Sleep(1000);
+            Console.WriteLine("Hello");
+        }
+
+        public static void WorldTask()
+        {
+            Thread.Sleep(1000);
+            Console.WriteLine("World");
+        }
+
+        static void Main(string[] args)
+        {
+            Task task = Task.Run(() => HelloTask());
+            task.ContinueWith( (prevTask) => WorldTask());
+            Console.WriteLine("Finished processing. Press a key to end.");
+            Console.ReadKey();
+        }
+    }
+}
+</pre>
+
+                        <li>
+                            El método <code>ContinueWith</code> tiene una sobrecarga que puede usar para especificar cuándo se puede
+                            ejecutar una tarea de continuación determinada. Esta versión acepta un parámetro de tipo
+                            <code>TaskContinuationOptions</code>.
+                            <br />
+                            El Listado 1-16 muestra esto puede ser usado:
+                        </li>
+
+                        <br />
+                        <span class="badge badge-secondary">Listado 1-16</span>&nbsp;Opciones de continuación
+                        <hr>
+
+<pre>
+Task task = Task.Run(() => HelloTask());
+task.ContinueWith((prevTask) => WorldTask(), TaskContinuationOptions.OnlyOnRanToCompletion);
+task.ContinueWith((prevTask) => ExceptionTask(), TaskContinuationOptions.OnlyOnFaulted);
+</pre>
+
+                        <li>
+                            El método <code>WorldTask</code> (el método que debe realizar la tarea de continuación) ahora solo se llama
+                            si el método <code>HelloTask</code> (el método ejecutado por la primera tarea) se completa con éxito.
+                            Si <code>HelloTask</code> produce una excepción, se iniciará una tarea que ejecuta el método <code>ExceptionTask</code>.
+                        </li>
+
+                    </ul>
+                    <h6>Tareas hijas</h6>
+                    <ul>
+                        <li>
+                            El código que se ejecuta dentro de una Tarea principal puede crear otras tareas, pero estas tareas "secundarias" se ejecutarán independientemente del principal en el que se crearon.
+                            Estas tareas se denominan tareas secundarias separadas o tareas anidadas separadas.
+                            Una tarea principal puede crear tareas secundarias con una opción de creación de tareas que especifica que la tarea secundaria está asociada a la principal.
+                            La clase principal no se completará hasta que se hayan completado todas las tareas secundarias adjuntas.
+                        </li>
+                        <li>
+                            El listado 1-17 muestra una tarea principal que crea 10 tareas secundarias adjuntas. Las tareas se crean
+                            llamando al método <code>StartNew</code> en la Fábrica de tareas predeterminada proporcionada por la clase Tarea.
+                            Esta sobrecarga del método <code>StartNew</code> acepta tres parámetros: la expresión lambda que proporciona
+                            el comportamiento de la tarea, un objeto de estado que se pasa a la tarea cuando se inicia y un valor
+                            <code>TaskCreationOption</code> que solicita que la nueva tarea sea una tarea secundaria.
+                        </li>
+
+                        <br />
+                        <span class="badge badge-secondary">Listado 1-17</span>&nbsp;Tareas hijas conectadas
+                        <hr>
+
+<pre>
+using System;
+using System.Threading;
+using System.Threading.Tasks;
+
+namespace LISTING_1_17_Attached_child_tasks
+{
+    class Program
+    {
+        public static void DoChild(object state)
+        {
+            Console.WriteLine("Child {0} starting", state);
+            Thread.Sleep(2000);
+            Console.WriteLine("Child {0} finished", state);
+        }
+
+        static void Main(string[] args)
+        {
+            var parent = Task.Factory.StartNew(() => {
+                Console.WriteLine("Parent starts");
+                for (int i = 0; i < 10; i++)
+                {
+                    int taskNo = i;
+                        <b>Task.Factory.StartNew(
+                            (x) => DoChild(x), // lambda expression
+                            taskNo, // state object
+                            TaskCreationOptions.AttachedToParent);</b>
+                }
+            });
+
+            parent.Wait(); // will wait for all the attached children to complete
+            Console.WriteLine("Parent finished. Press a key to end.");
+            Console.ReadKey();
+        }
+    }
+}
+</pre>
+                        <li>
+                            Puede crear una tarea sin ninguna tarea secundaria adjunta especificando la opción
+                            <code>TaskCreationOptions.DenyChildAttach</code> cuando cree la tarea.
+                            Los hijos de dicha tarea siempre se crearán como tareas secundarias independientes.
+                            Tenga en cuenta que las tareas creadas con el método <code>Task.Run</code> tienen el conjunto de
+                            opciones <code>TaskCreationOptions.DenyChildAttach</code> y, por lo tanto, no pueden tener tareas secundarias adjuntas.
+                        </li>
+                    </ul>
+                    <h5>Hilos y pool de hilos</h5>
+                    <ul>
+                        <li>
+                            Los hilos son un nivel de abstracción más bajo que las tareas.
+                            Un objeto Task representa un elemento de trabajo a realizar, mientras que un objeto Thread representa un
+                            proceso que se ejecuta dentro del sistema operativo.
+                        </li>
+                    </ul>
+                    <h6>Hilos y tareas</h6>
+                    <ul>
+                        <li>
+                            Al crear sus primeros subprocesos, notará que el código se parece bastante al utilizado para crear sus
+                            primeras tareas. Sin embargo, existen algunas diferencias importantes entre los dos que debe tener en cuenta:
+                        </li>
+                        <li class="segundo">
+                            Los hilos se crean como procesos en primer plano (aunque se pueden configurar para ejecutarse en segundo plano).
+                            El sistema operativo ejecutará un proceso en primer plano hasta su finalización, lo que significa que una aplicación no finalizará mientras contenga un hilo en primer plano activo.
+                            Un proceso en primer plano que contiene un bucle infinito se ejecutará para siempre, o hasta que arroje una excepción no detectada o el sistema operativo lo finalice.
+                            Las tareas se crean como procesos en segundo plano. Esto significa que las tareas se pueden finalizar antes de que se completen si se completan todos los subprocesos de primer plano en una aplicación.
+                        </li>
+                        <li class="segundo">
+                            Los subprocesos tienen una propiedad de prioridad que se puede cambiar durante la vida útil del subproceso.
+                            No es posible establecer la prioridad de una tarea. Esto le da a un hilo una solicitud de mayor prioridad, por lo que se asigna una mayor parte del tiempo de procesador disponible.
+                        </li>
+                        <li class="segundo">
+                            Un hilo no puede entregar un resultado a otro hilo. Los subprocesos deben comunicarse mediante el uso de variables compartidas, que pueden introducir problemas de sincronización.
+                        </li>
+                        <li class="segundo">
+                            No es posible crear una continuación en un hilo. En cambio, los hilos proporcionan un método llamado unión, que permite que un hilo se detenga hasta que otro se complete.
+                        </li>
+                        <li class="segundo">
+                            No es posible agregar excepciones en varios subprocesos.
+                            Una excepción oculta dentro de un hilo debe ser atrapada y tratada por el código en ese hilo. Las tareas proporcionan agregación de excepciones, pero los hilos no.
+                        </li>
+                    </ul>
+                    <h6>Crear un hilo</h6>
+                    <ul>
+                        <li>
+                            La clase Thread se encuentra en el espacio de nombres System.Threading.
+                            Cuando crea un subproceso, puede pasar al constructor el nombre del método que ejecutará el subproceso.
+                            Una vez que se ha creado el hilo, puede llamar al método de Inicio en el hilo para comenzar a ejecutarlo.
+                            El listado 1-18 muestra cómo se hace esto:
+                        </li>
+
+                        <br />
+                        <span class="badge badge-secondary">Listado 1-18</span>&nbsp;Creando de hilos
+                        <hr>
+
+<pre>
+using System;
+using System.Threading;
+
+namespace LISTING_1_18_Creating_threads
+{
+    class Program
+    {
+        static void ThreadHello()
+        {
+            Console.WriteLine("Hello from the thread");
+            Thread.Sleep(2000);
+        }
+
+        static void Main(string[] args)
+        {
+            Thread thread = new Thread(ThreadHello);
+            thread.Start();
+        }
+    }
+}
+</pre>
+                    </ul>
+                    <h6>Hilos y ThreadStart</h6>
+                    <ul>
+                        <li>
+                            Tenga en cuenta que las versiones anteriores de .NET requerían la creación de un delegado <code>ThreadStart</code> para especificar el método a ejecutar por el hilo.
+                            El listado 1-19 muestra cómo se hace esto. Actualmente no es necesario, pero puede ver que se usa en programas anteriores.
+                        </li>
+
+
+                        <br />
+                        <span class="badge badge-secondary">Listado 1-19</span>&nbsp;Uso de ThreadStart
+                        <hr>
+<pre>
+static void Main(string[] args)
+{
+    ThreadStart ts = new ThreadStart(ThreadHello);
+    Thread thread = new Thread(ts);
+    thread.Start();
+}
+</pre>
+
+                        <li>
+                            El delegado <code>ThreadStart</code> ya no es necesario.
+                        </li>
+                    </ul>
+
+                    <h6>Hilos y expresiones lambda</h6>
+                    <ul>
+                        <li>
+                            Es posible iniciar un hilo usando una expresión lambda para especificar la acción del hilo,
+                            como se muestra en el Listado 1-20.
+                        </li>
+                        <br />
+                        <span class="badge badge-secondary">Listado 1-20</span>&nbsp;ThreadStart y uso de expresiones lambda
+                        <hr>
+
+                        <pre>
+static void Main(string[] args)
+{
+    Thread thread = new Thread(() =>
+    {
+        Console.WriteLine("Hello from the thread");
+        Thread.Sleep(1000);
+    });
+
+    thread.Start();
+    Console.WriteLine("Press a key to end.");
+    Console.ReadKey();
+}
+</pre>
+                        <li>
+                            Cuando se ejecuta el programa puede sorprenderte ver el siguiente resultado:
+                        </li>
+
+                        <var>
+                            Press a key to end.
+                            <br />
+                            Hello from the thread.
+                        </var>
+                        <br />
+
+                        <li>
+                            Parece que el programa está imprimiendo cosas en el orden incorrecto. Sin embargo, si lo piensa, el orden tiene sentido. El hilo que se ejecuta dentro del método Main llama a Start para comenzar el nuevo hilo. Sin embargo, antes de que el nuevo hilo comience a ejecutarse, el hilo se ejecuta dentro
+                            el método Main luego alcanza el método WriteLine y muestra "Presione cualquier tecla para finalizar". Luego el hilo de fondo obtiene el control e imprime, "Hola desde el hilo".
+                        </li>
+                    </ul>
+                    <h6>Pasar datos a un hilo</h6>
+                    <ul>
+                        <li>
+                            Un programa puede pasar datos a un hilo cuando se crea utilizando el delegado ParameterizedThreadStart. Esto especifica el método de subproceso como uno que acepta un único parámetro de objeto.
+                            El objeto a pasar al hilo se coloca en el método de Inicio, como se muestra en el Listado 1-21.
+                        </li>
+                        <br />
+                        <span class="badge badge-secondary">Listado 1-21</span>&nbsp;ThreadStart parametrizado
+                        <hr>
+
+                        <pre>
+using System;
+using System.Threading;
+
+namespace LISTING_1_21_ParameterizedThreadStart
+{
+    class Program
+    {
+        static void WorkOnData(object data)
+        {
+            Console.WriteLine("Working on: {0}", data);
+            Thread.Sleep(1000);
+        }
+
+        static void Main(string[] args)
+        {
+                        <b>ParameterizedThreadStart ps = new ParameterizedThreadStart(WorkOnData);
+            Thread thread = new Thread(ps);
+            thread.Start(99);</b>
+        }
+    }
+}
+</pre>
+
+                        <li>
+                            Otra forma de pasar datos a un hilo es especificar el comportamiento del hilo como una expresión lambda que acepta un parámetro.
+                            El parámetro para la expresión lambda son los datos que se pasan al hilo.
+                            El listado 1-22 muestra cómo se hace esto; el parámetro recibe los datos del nombre en la expresión lamba y el valor 99 se pasa a la expresión lambda a través del método Start.
+                        </li>
+                        <br />
+                        <span class="badge badge-secondary">Listado 1-22</span>&nbsp;Pasar parametros a un hilo utilizando lambda
+                        <hr>
+
+                        <pre>
+static void Main(string[] args)
+{
+    Thread thread = new Thread((<b>data</b>) =>
+    {
+        WorkOnData(data);
+    });
+
+    thread.Start(99);
+}
+</pre>
+
+                        <li>
+                            Tenga en cuenta que los datos que se pasarán al hilo siempre se pasan como referencia de objeto.
+                            Esto significa que no hay forma de asegurarse en el momento de la compilación de que la inicialización de subprocesos se realiza con un tipo particular de datos.
+                        </li>
+                    </ul>
+                    <h6>Abortar un hilo</h6>
+                    <ul>
+                        <li>
+                            Un objeto Thread expone un método Abortar, que se puede invocar en el hilo para abortarlo.
+                            El hilo se termina al instante. El listado 1-23 muestra cómo un hilo puede abortar a otro.
+                        </li>
+                        <br />
+                        <span class="badge badge-secondary">Listado 1-23</span>&nbsp;Abortar un hilo
+                        <hr>
+
+                        <pre>
+using System;
+using System.Threading;
+
+namespace LISTING_1_23_aborting_a_thread
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            Thread tickThread = new Thread(() =>
+            {
+                while (true)
+                {
+                    Console.WriteLine("Tick");
+                    Thread.Sleep(1000);
+                }
+            });
+
+            tickThread.Start();
+
+            Console.WriteLine("Press a key to stop the clock");
+            Console.ReadKey();
+            tickThread.Abort();
+            Console.WriteLine("Press a key to exit");
+            Console.ReadKey();
+        }
+    }
+}
+</pre>
+
+                        <li>
+                            Cuando se aborta un hilo, se detiene instantáneamente. Esto podría significar que deja el programa en un
+                            estado ambiguo, con archivos abiertos y recursos asignados.
+                            Una mejor manera de abortar un hilo es usar una variable de bandera compartida.
+                            El listado 1-24 muestra cómo hacer esto. La variable <code>tickRunning</code> se usa para controlar el
+                            bucle en <code>tickThread</code>. Cuando <code>tickRunning</code> se establece en falso, el subproceso finaliza.
+                        </li>
+                        <br />
+                        <span class="badge badge-secondary">Listado 1-24</span>&nbsp;Uso de una variable compartida
+                        <hr>
+
+<pre>
+using System;
+using System.Threading;
+
+namespace LISTING_1_24_shared_flag_variable
+{
+    class Program
+    {
+        static bool tickRunning; // flag variable
+        static void Main(string[] args)
+        {
+            tickRunning = true;
+            Thread tickThread = new Thread(() =>
+            {
+                while (tickRunning)
+                {
+                    Console.WriteLine("Tick");
+                    Thread.Sleep(1000);
+                }
+            });
+
+            tickThread.Start();
+            Console.WriteLine("Press a key to stop the clock");
+            Console.ReadKey();
+            tickRunning = false;
+            Console.WriteLine("Press a key to exit");
+            Console.ReadKey();
+        }
+    }
+}
+</pre>
+
+                    </ul>
+                    <h6>Sincronización de hilo utilizando join</h6>
+                    <ul>
+                        <li>
+                            El método de unión permite que dos hilos se sincronicen. Cuando un hilo llama al método de unión en otro hilo,
+                            la persona que llama se une hasta que se completa el otro hilo. El listado 1-25 muestra cómo funciona esto.
+                        </li>
+                        <br />
+                        <span class="badge badge-secondary">Listado 1-25</span>&nbsp;Uso de join
+                        <hr>
+
+<pre>
+Thread threadToWaitFor = new Thread(() =>
+{
+    Console.WriteLine("Thread starting");
+    Thread.Sleep(2000);
+    Console.WriteLine("Thread done");
+});
+
+threadToWaitFor.Start();
+Console.WriteLine("Joining thread");
+threadToWaitFor.Join();
+Console.WriteLine("Press a key to exit");
+Console.ReadKey()
+</pre>
+                    </ul>
+                    <h6>ThreadLocal y el almacenamiento de datos en un hilo</h6>
+                    <ul>
+                        <li>
+                            El almacenamiento de datos de subprocesos y el listado de ThreadLocal 1-24 anterior, muestra cómo los
+                            subprocesos pueden "compartir" variables, que se declaran en el programa en el que se ejecuta el subproceso.
+                            En este programa, dos hilos utilizaron la misma variable, <code>threadRunning</code>. Un hilo leyó de la variable, y otro
+                            hilo escribió en él.
+                        </li>
+                        <li>
+                            Si desea que cada subproceso tenga su propia copia de una variable en particular, puede usar el atributo
+                            <code>ThreadStatic</code> para especificar que la variable dada se debe crear para cada subproceso.
+                        </li>
+                        <li>
+                            La mejor manera de entender esto es considerar que si la variable threadRunning en el Listado 1-24 se hizo
+                            <code>ThreadStatic</code>, no detendría un hilo si <code>threadRunning</code> se hiciera falso, porque habría
+                            una copia de <code>threadRunning</code> para cada hilo. Los cambios en la variable en un hilo no afectarían el
+                            valor en otro.
+                        </li>
+                        <li>
+                            Si su programa necesita inicializar los datos locales para cada hilo, puede usar la clase
+                            <code>ThreadLocal</code>. Cuando se crea una instancia de <code>ThreadLocal</code>, se le asigna un delegado
+                            al código que inicializará los atributos de los hilos. El listado 1-26 muestra cómo puede usarlo.
+                            El miembro <code>RandomGenerator</code> de la clase devuelve un generador de números aleatorios que debe ser
+                            utilizado por un hilo para producir comportamientos aleatorios. Desea que cada subproceso tenga el mismo
+                            comportamiento "aleatorio", por lo que <code>RandomGenerator</code> produce un nuevo generador de números
+                            aleatorios con la misma semilla cada vez que se llama.
+                        </li>
+                        <br />
+                        <span class="badge badge-secondary">Listado 1-26</span>&nbsp;ThreadLocal
+                        <hr>
+
+                        <pre>
+using System;
+using System.Threading;
+
+namespace LISTING_1_26_ThreadLocal
+{
+    class Program
+    {
+        public static ThreadLocal<Random> RandomGenerator =
+        new ThreadLocal<Random>(() =>
+            {
+                return new Random(2);
+            });
+
+        static void Main(string[] args)
+        {
+            Thread t1 = new Thread(() =>
+            {
+                for (int i = 0; i < 5; i++)
+                {
+                    Console.WriteLine("t1: {0}", RandomGenerator.Value.Next(10));
+                    Thread.Sleep(500);
+                }
+            });
+
+            Thread t2 = new Thread(() =>
+            {
+                for (int i = 0; i < 5; i++)
+                {
+                    Console.WriteLine("t2: {0}", RandomGenerator.Value.Next(10));
+                    Thread.Sleep(500);
+                }
+            });
+
+            t1.Start();
+            t2.Start();
+            Console.ReadKey();
+        }
+    }
+}
+</pre>
+
+                        <li>
+                            Cuando diferentes hilos usan el valor de su <code>RandomGenerator</code>, todos producirán la misma secuencia
+                            de números aleatorios. Este es el resultado del programa:
+                        </li>
+<pre>
+t2: 7
+t1: 7
+t2: 4
+t1: 4
+t1: 1
+t2: 1
+t2: 9
+t1: 9
+t1: 1
+t2: 1
+</pre>
+                    </ul>
+                    <h6>Contexto de ejecución de un hilo</h6>
+                    <ul>
+                        <li>
+                            Una instancia de Thread expone un rango de información de contexto, y algunos elementos se pueden leer y
+                            otros leer y configurar. La información disponible incluye el nombre del subproceso (si lo hay),
+                            prioridad del subproceso, ya sea en primer plano o en segundo plano, la cultura de subprocesos
+                            (esto contiene información específica de la cultura en un valor de tipo CultureInfo) y el contexto de
+                            seguridad del subproceso. La propiedad <code>Thread.CurentThread</code> puede ser utilizada por un hilo
+                            para descubrir esta información sobre sí mismo. El listado 1-27 muestra cómo se puede mostrar la
+                            información.
+                        </li>
+                        <br />
+                        <span class="badge badge-secondary">Listado 1-27</span>&nbsp;Contexto de ejecucion de un hilo
+                        <hr>
+
+<pre>
+using System;
+using System.Threading;
+
+namespace LISTING_1_27_Thread_context
+{
+    class Program
+    {
+        static void DisplayThread(Thread t)
+        {
+            Console.WriteLine("Name: {0}", t.Name);
+            Console.WriteLine("Culture: {0}", t.CurrentCulture);
+            Console.WriteLine("Priority: {0}", t.Priority);
+            Console.WriteLine("Context: {0}", t.ExecutionContext);
+            Console.WriteLine("IsBackground?: {0}", t.IsBackground);
+            Console.WriteLine("IsPool?: {0}", t.IsThreadPoolThread);
+        }
+
+        static void Main(string[] args)
+        {
+            Thread.CurrentThread.Name = "Main method";
+            DisplayThread(Thread.CurrentThread);
+        }
+    }
+}
+</pre>
+                    </ul>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+

@@ -1,0 +1,50 @@
+﻿
+@{
+    ViewData["Title"] = "Index";
+    Layout = "_Layout";
+}
+
+<div class="row">
+    <div class="col">
+        <div class="card" style="margin: 20px;">
+            <div class="card-body">
+                <h5 class="card-title">Capitulo 1: Controlando el flujo de un programa</h5>
+                <h6 class="card-subtitle mb-2 text-muted">Tema 2: Manejar y administrar multihilos</h6>
+                <hr>
+                <p class="card-text">
+                    Ha visto cómo podemos crear subprocesos y tareas y utilizar colecciones simultáneas para compartir datos de forma segura entre ellos. Ahora es el momento de profundizar un poco más en las tareas y procesos y descubrir cómo administrarlos.
+                    <br />
+                    <br />
+                    Al ejecutar algunas de las aplicaciones en la sección anterior, notamos que su comportamiento no era predecible. El orden en que se realizaron las acciones fue diferente cada vez que se ejecutó un programa. Por ejemplo, el resultado del Listado 1-2 “ParallelForEach en uso” es diferente cada vez que lo ejecuta. Esto se debe a que el sistema operativo decide cuándo se ejecuta un subproceso y las decisiones se toman en función de la carga de trabajo en la computadora. Si la máquina se llena de repente, tal vez realizando una actualización, esto afectará la ejecución de los subprocesos.
+                    Llamamos a esta forma de trabajar asincrónica porque las operaciones no están sincronizadas.
+                    <br />
+                    <br />
+                    Cuando diseña soluciones asincrónicas que utilizan subprocesos múltiples, debe tener mucho cuidado para asegurarse de que la incertidumbre sobre los tiempos de actividad de los subprocesos no afecte el funcionamiento de la aplicación o los resultados que se producen. En esta sección, descubrirá cómo sincronizar el acceso a los recursos que utiliza su aplicación. Verá que si el acceso a los recursos no está sincronizado correctamente, puede hacer que los programas calculen el resultado incorrecto. Una aplicación multiproceso mal escrita podría incluso bloquearse porque dos procesos están esperando que se complete. Descubrirá cómo detener las tareas que pueden haberse atascado y cómo asegurarse de que los subprocesos funcionen juntos independientemente del orden en que se realicen.
+                    <br>
+                    <br />
+                    Esta seccion cubre como:
+                    <ul>
+                        <li>
+                            <a href="Tema0201">Sincronizar recursos</a>
+                        </li>
+                        <li>
+                            <a href="Tema0202">
+                                Implementación de bloqueos
+                            </a>
+                        </li>
+                        <li>
+                            <a href="Tema0203">
+                                Cancelación de una tarea de larga ejecución
+                            </a>
+                        </li>
+                        <li>
+                            <a href="Tema0204">
+                                Implementar métodos seguros ne hilos para manejar condiciones de carrera
+                            </a>
+                        </li>
+                    </ul>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>

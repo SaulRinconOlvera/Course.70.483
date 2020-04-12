@@ -1,0 +1,32 @@
+﻿
+@{
+    ViewData["Title"] = "Index";
+    Layout = "_Layout";
+}
+
+<div class="row">
+    <div class="col">
+        <div class="card" style="margin: 20px;">
+            <div class="card-body">
+                <h5 class="card-title">Capitulo 1: Controlando el flujo de un programa</h5>
+                <h6 class="card-subtitle mb-2 text-muted">Tema 4: Crear e implementar eventos y callbacks</h6>
+                <hr>
+                <p class="card-text">
+                    <h5>Métodos anónimos</h5>
+                    <ul>
+                        <li>
+                            Hasta ahora hemos estado utilizando expresiones lambda que se adjuntan a los delegados. El delegado proporciona un nombre mediante el cual
+                            se puede acceder al código en la expresión lambda. Sin embargo, una expresión lambda también se puede usar directamente en un contexto en
+                            el que solo desea expresar un comportamiento particular. El programa en el Listado 1-75 usa Task.Run para comenzar una nueva tarea.
+                            El código realizado por la tarea se expresa directamente como una expresión lambda, que se proporciona como un argumento para el método
+                            Task.Run. En ningún momento este código tiene nombre.
+                        </li>
+                        <li>
+                            Una expresión lambda utilizada de esta manera se puede describir como un método anónimo; porque es un código funcional que no tiene nombre.
+                        </li>
+                    </ul>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>

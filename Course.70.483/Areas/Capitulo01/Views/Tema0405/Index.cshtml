@@ -1,0 +1,64 @@
+﻿
+@{
+    ViewData["Title"] = "Index";
+    Layout = "_Layout";
+}
+
+<div class="row">
+    <div class="col">
+        <div class="card" style="margin: 20px;">
+            <div class="card-body">
+                <h5 class="card-title">Capitulo 1: Controlando el flujo de un programa</h5>
+                <h6 class="card-subtitle mb-2 text-muted">Tema 4: Crear e implementar eventos y callbacks</h6>
+                <hr>
+                <p class="card-text">
+                    <h5>Crear delegados</h5>
+                    <ul>
+                        <li>
+                            Hasta ahora, hemos utilizado los tipos Action y EventHandler, que proporcionan delegados predefinidos. Sin embargo, podemos crear nuestros
+                            propios delegados. Hasta ahora, los delegados que hemos visto han mantenido una colección de referencias de métodos. Nuestras aplicaciones
+                            han utilizado los operadores += y -= para agregar referencias de métodos a un delegado dado. También puede crear un delegado que se refiera
+                            a un único método en un objeto.
+                        </li>
+                        <li>
+                            Un tipo de delegado se declara utilizando la palabra clave delegado. La declaración aquí crea un tipo de delegado llamado IntOperation que
+                            puede referirse a un método de tipo entero que acepta dos parámetros enteros.
+                        </li>
+                        <li>
+                            Un programa ahora puede crear variables delegadas de tipo IntOperation. Cuando se declara una variable delegada, se puede configurar para
+                            que haga referencia a un método dado. En el Listado 1-71 a continuación, se hace que la variable op se refiera primero a un método llamado
+                            Agregar, y luego a un método llamado Restar. Cada vez que se llama a op, ejecutará el método al que se hizo referencia.
+                        </li>
+                        <li>
+                            Tenga en cuenta que el código en el Listado 1-71 también muestra que un programa puede crear explícitamente una instancia de la clase
+                            delegada. El compilador de C # generará automáticamente el código para crear una instancia de delegado cuando se asigne un método a la
+                            variable de delegado.
+                        </li>
+                        <li>
+                            Los delegados se pueden usar exactamente de la misma manera que cualquier otra variable. Puede tener listas y diccionarios que contengan
+                            delegados y también puede usarlos como parámetros de los métodos.
+                        </li>
+                    </ul>
+                    <h5>Delegado vs delegado</h5>
+                    <ul>
+                        <li>
+                            Es importante comprender la diferencia entre delegado (con una d minúscula) y Delegado (con una D mayúscula). La palabra delegado con una
+                            d minúscula es la palabra clave utilizada en un programa de C# que le dice al compilador que cree un tipo de delegado. Se utiliza
+                            en el Listado 1-71 para crear el tipo de delegado IntOperation.
+                        </li>
+                        <li>
+                            La palabra Delegado con una D mayúscula es la clase abstracta que define el comportamiento de las instancias de delegado. Una vez que la
+                            palabra clave delegado se ha utilizado para crear un tipo delegado, los objetos de ese tipo delegado se realizarán como instancias
+                            Delegado.
+                        </li>
+                        <li>
+                            Esta declaración crea un valor IntOperation llamado op. La variable op es una instancia del tipo System.MultiCastDelegate, que es un
+                            elemento secundario de la clase Delegate. Un programa puede usar la variable op para mantener una colección de suscriptores o para
+                            referirse a un único método.
+                        </li>
+                    </ul>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>

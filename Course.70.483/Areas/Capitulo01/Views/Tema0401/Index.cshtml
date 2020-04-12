@@ -1,0 +1,94 @@
+﻿
+@{
+    ViewData["Title"] = "Index";
+    Layout = "_Layout";
+}
+
+<div class="row">
+    <div class="col">
+        <div class="card" style="margin: 20px;">
+            <div class="card-body">
+                <h5 class="card-title">Capitulo 1: Controlando el flujo de un programa</h5>
+                <h6 class="card-subtitle mb-2 text-muted">Tema 4: Crear e implementar eventos y callbacks</h6>
+                <hr>
+                <p class="card-text">
+                    <h5>Controladores de eventos</h5>
+                    <ul>
+                        <li>
+                            En los días previos a la sincronización y espera se agregaron al Lenguaje C#, un programa se vería obligado a usar eventos para administrar
+                            operaciones asincrónicas. Antes de iniciar una tarea asincrónica, como obtener una página web de un servidor, un programa necesitaría
+                            vincular un método a un evento que se generaría cuando se completara la acción. Hoy en día, los eventos se usan con más frecuencia para la
+                            comunicación entre procesos.
+                        </li>
+                        <li>
+                            Hemos visto que un objeto puede proporcionar un servicio para otros objetos al exponer un método público al que se puede llamar para
+                            realizar ese servicio. Por ejemplo, en una aplicación de consola, un programa puede usar el método WriteLine expuesto por la consola para
+                            mostrar mensajes al usuario del programa.
+                        </li>
+                        <li>
+                            Los eventos se utilizan al revés de esta situación, cuando desea que un objeto notifique a otro objeto que algo ha sucedido. Se puede hacer
+                            que un objeto publique eventos a los que se pueden suscribir otros objetos. Los componentes de una solución que se comunican usando eventos
+                            de esta manera se describen como poco acoplados. Lo único que un componente debe saber sobre el otro es el diseño del mecanismo de
+                            publicación y suscripción.
+                        </li>
+                    </ul>
+                    <h5>Delegados y eventos</h5>
+                    <ul>
+                        <li>
+                            Para comprender cómo se implementan los eventos, debe comprender el concepto de un delegado de C #. Este es un dato que contiene una
+                            referencia a un método particular en una clase. Cuando lleva su automóvil a un servicio, le da su número de teléfono al encargado del
+                            garaje para que puedan llamarlo cuando su automóvil esté listo para ser recogido. Puede pensar en un delegado como el "número de teléfono"
+                            de un método en una clase. Un editor de eventos recibe un delegado que describe el método en el suscriptor. El editor puede llamar a ese
+                            delegado cuando ocurra el evento dado y el método se ejecutará en el suscriptor.
+                        </li>
+                    </ul>
+                    <h5>Delegado de acción</h5>
+                    <ul>
+                        <li>
+                            Las bibliotecas .NET proporcionan varios tipos de delegados predefinidos. En la sección "Crear delegados", descubrirá cómo crear sus
+                            propios tipos de delegados.
+                        </li>
+                        <li>
+                            Hay varios tipos de delegados de acción predefinidos. El delegado de acción más simple representa una referencia a un método que no
+                            devuelve un resultado (el método es de tipo nulo) y no acepta ningún parámetro. Puede usar una Acción para crear un punto de enlace para
+                            los suscriptores.
+                        </li>
+                        <li>
+                            El Listado 1-64 muestra cómo se puede usar un delegado de Acción para crear un editor de eventos. Contiene una clase de alarma que publica
+                            a los suscriptores cuando se activa una alarma. El delegado de acción del evento se llama OnAlarmRaised. Un proceso interesado en las
+                            alarmas puede vincular a los suscriptores a este evento. El método RaiseAlarm se llama en la alarma para activar la alarma.
+                            Cuando RaiseAlarm se ejecuta, primero verifica si algún método de suscriptor se ha vinculado al delegado OnAlarmRaised. Si es así, se llama
+                            al delegado.
+                        </li>
+                    </ul>
+                    <h5>Suscripciones a eventos</h5>
+                    <ul>
+                        <li>
+                            Los suscriptores se unen a un editor utilizando el operador +=. El operador += está sobrecargado para aplicar entre un delegado y un
+                            comportamiento. Significa "agregar este comportamiento a los de este delegado". No se garantiza que los métodos en un delegado se invoquen
+                            en el orden en que se agregaron al delegado. Puede obtener más información sobre la sobrecarga en la sección "Crear tipos".
+                        </li>
+                        <li>
+                            Los delegados agregados a un evento publicado se llaman en el mismo hilo que el hilo que publica el evento. Si un delegado bloquea este
+                            hilo, se bloquea todo el mecanismo de publicación. Esto significa que un suscriptor malicioso o mal escrito tiene la capacidad de bloquear
+                            la publicación de eventos. El editor se ocupa de esto iniciando una tarea individual para ejecutar cada uno de los suscriptores del evento.
+                            El objeto Delegado en un editor expone un método llamado GetInvokcationList, que puede usarse para obtener una lista de todos los
+                            suscriptores. Puede ver este método en uso más adelante en la sección "Excepciones en suscriptores de eventos".
+                        </li>
+                        <li>
+                            Puede simplificar la llamada del delegado utilizando el operador condicional nulo. Esto solo realiza una acción si el elemento dado no es nulo.
+                        </li>
+                        <li>
+                            OnAlarmRaised? .Invoke ();
+                        </li>
+                        <li>
+                            El operador condicional nulo “.?” Significa, “solo acceda a este miembro de la clase si la referencia no es nula”. Un delegado expone un
+                            método Invoke para invocar los métodos vinculados al delegado. El comportamiento del código es el mismo que en el Listado 1-64, pero el
+                            código es más corto y claro.
+                        </li>
+                    </ul>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,99 @@
+﻿
+@{
+    ViewData["Title"] = "Index";
+    Layout = "_Layout";
+}
+
+<div class="row">
+    <div class="col">
+        <div class="card" style="margin: 20px;">
+            <div class="card-body">
+                <h5 class="card-title">Capitulo 1: Controlando el flujo de un programa</h5>
+                <h6 class="card-subtitle mb-2 text-muted">Tema 4: Crear e implementar eventos y callbacks</h6>
+                <hr>
+                <p class="card-text">
+                    <h5>Usar expresiones lambda (métodos anónimos)</h5>
+                    <ul>
+                        <li>
+                            Los delegados permiten que un programa trate los comportamientos (métodos en objetos) como elementos de datos. Un delegado es un elemento
+                            de datos que sirve como referencia a un método en un objeto. Esto agrega una gran cantidad de flexibilidad para los programadores. Sin
+                            embargo, los delegados son un trabajo duro de usar. Primero se debe declarar el tipo de delegado real y luego hacer que se refiera a un
+                            método particular que contiene el código que describe la acción a realizar.
+                        </li>
+                        <li>
+                            Las expresiones lambda son una forma pura de expresar la parte de "comportamientos que entra algo, algo sucede y algo sale". Los tipos de
+                            los elementos y el resultado a devolver se infieren del contexto en el que se usa la expresión lambda. Considere la siguiente declaración.
+                        </li>
+                        <li>
+                            Esta declaración declara el delegado de IntOperation que se utilizó en el Listado 1-71. El delegado de IntOperation puede hacer referencia
+                            a cualquier operación que tome dos parámetros enteros y devuelva un resultado entero. Ahora considere esta declaración, que crea un delegado
+                            de IntOperation llamado add y lo asigna a una expresión lambda que acepta dos parámetros de entrada y devuelve su suma.
+                        </li>
+                        <li>
+                            El operador => se llama operador lambda. Los elementos ayb a la izquierda de la expresión lambda se asignan a los parámetros del método
+                            definidos por el delegado. La declaración a la derecha de la expresión lambda da el comportamiento de la expresión y, en este caso, agrega
+                            los dos parámetros juntos.
+                        </li>
+                        <li>
+                            Al describir el comportamiento de la expresión lambda, puede usar la frase "entra" para describir lo que está sucediendo. En este caso,
+                            podría decir "a y b entran en un más b". El nombre lambda proviene del cálculo lambda, una rama de las matemáticas que se refiere a la
+                            "abstracción funcional". Esta expresión lambda acepta dos parámetros enteros y devuelve un entero. Las expresiones Lambda pueden aceptar
+                            múltiples parámetros y contener múltiples declaraciones, en cuyo caso las declaraciones están encerradas en un bloque. El Listado 1-72
+                            muestra cómo crear una expresión lambda que imprime un mensaje y realiza un cálculo.
+                        </li>
+                    </ul>
+                    <h5>Cierres</h5>
+                    <ul>
+                        <li>
+                            El código en una expresión lambda puede acceder a las variables en el código que lo rodea. Estas variables deben estar disponibles cuando
+                            se ejecuta la expresión lambda, por lo que el compilador extenderá la vida útil de las variables utilizadas en las expresiones lambda.
+                        </li>
+                        <li>
+                            El listado 1-73 muestra cómo funciona esto. El método SetLocal declara una variable local llamada localInt y establece su valor en 99.
+                            En circunstancias normales, la variable localInt se destruiría al completar el método SetLocal. Sin embargo, la variable localInt se usa
+                            en una expresión lambda, que se asigna al delegado getLocal. El compilador se asegura de que la variable localInt esté disponible para su
+                            uso en la expresión lambda cuando posteriormente se llama desde el método Main. Esta extensión de vida variable se llama cierre.
+                        </li>
+                    </ul>
+                    <h5>Tipos incorporados para usar con expresiones lambda</h5>
+                    <ul>
+                        <li>
+                            Considere las siguientes tres declaraciones:
+                        </li>
+                        <li>
+                            delegar int IntOperation (int a, int b);
+                            IntOperation add = (a, b) => a + b;
+                            Console.WriteLIne (add (2,2);
+                        </li>
+                        <li>
+                            La primera instrucción crea un delegado llamado IntOperation que acepta dos valores enteros y devuelve un resultado entero. La segunda
+                            instrucción crea una IntOperation llamada add que usa una expresión lambda para describir lo que hace, que es agregar los dos parámetros
+                            y devolver el resultado. La tercera declaración realmente usa la operación de agregar para calcular e imprimir 2 + 2.
+                        </li>
+                        <li>
+                            Esto funciona, pero tuvimos que crear el tipo de delegado IntOperation para especificar un comportamiento que acepte dos enteros y devuelva
+                            su suma antes de que podamos crear algo que se refiera a una expresión lambda de ese tipo. Hay varios tipos de delegados "incorporados" que
+                            podemos usar para proporcionar un contexto para una expresión lambda.
+                        </li>
+                        <li>
+                            Los tipos Func proporcionan una gama de delegados para métodos que aceptan valores y devuelven resultados. El Listado 1-74 muestra cómo se
+                            usa el tipo Func para crear un comportamiento de agregar que tiene el mismo tipo de retorno y parámetros que el delegado de IntOperation en
+                            el Listado 1-71. Hay versiones del tipo Func que aceptan hasta 16 elementos de entrada. El método add aquí acepta dos enteros y devuelve un
+                            entero como resultado.
+                        </li>
+                        <li>
+                            Si la expresión lambda no devuelve un resultado, puede usar el tipo de acción que vio anteriormente cuando creamos nuestros primeros
+                            delegados. La siguiente declaración crea un delegado llamado logMessage que se refiere a una expresión lambda que acepta una cadena y luego
+                            la imprime en la consola. Para diferentes formas de registro, el delegado logMessage se puede adjuntar a otros métodos que guardan los
+                            datos de registro en un archivo.
+                        </li>
+                        <li>
+                            El tipo de delegado incorporado Predicate le permite crear código que toma un valor de un tipo particular y devuelve verdadero o falso.
+                            El siguiente predicado dividesByThree devuelve verdadero si el valor es divisible por 3.
+                        </li>
+                    </ul>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>

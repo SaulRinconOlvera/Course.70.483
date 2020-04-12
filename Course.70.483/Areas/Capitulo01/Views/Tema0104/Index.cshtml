@@ -1,0 +1,130 @@
+﻿@{
+    ViewData["Title"] = "Index";
+    Layout = "_Layout";
+}
+
+<div class="row">
+    <div class="col">
+        <div class="card" style="margin: 20px;">
+            <div class="card-body">
+                <h5 class="card-title">Capitulo 1: Controlando el flujo de un programa</h5>
+                <h6 class="card-subtitle mb-2 text-muted">Tema 1: Implementando multihilos y procesamiento asincrono</h6>
+                <hr>
+                <p class="card-text">
+                    <h5>Tareas y la interfaz de usuario</h5>
+                    <ul>
+                        <li>
+                            Una aplicación Universal Application (Windows Store) Windows Presentation Foundation (WPF) o una aplicación WinForms puede
+                            considerarse que tiene un solo hilo de ejecución que se ocupa de la interfaz de usuario.
+                            En cualquier momento dado, este hilo realizará una acción particular.
+                            En otras palabras, cuando el código en un controlador de eventos se ejecuta en respuesta a un evento en particular, como presionar un
+                            botón, no es posible ejecutar el código en ninguna otra parte de la interfaz de usuario. A veces ve este comportamiento en aplicaciones
+                            mal escritas, donde la interfaz de usuario de la aplicación deja de responder mientras se lleva a cabo una acción.
+                        </li>
+                        <li>
+                            La Figura 1-1 muestra una aplicación universal de Windows simple que calcula el promedio de una gran cantidad de valores.
+                        </li>
+                        <li>
+                            FIGURA 1-1 La aplicación de promedios aleatorios.
+                        </li>
+                        <li>
+                            El usuario puede investigar el comportamiento del generador de números aleatorios C# en un gran número de operaciones. Se ingresa el
+                            número de promedios que se generarán y cuando se presiona el botón Inicio, el programa genera ese número de valores aleatorios y luego
+                            imprime su promedio. El listado 1-29 muestra el código para esta aplicación.
+                        </li>
+                        <br />
+                        <span class="badge badge-secondary">Listado 1-29</span>&nbsp;Bloqueando la interfaz de usuario
+                        <hr>
+
+<pre>
+private double computeAverages(long noOfValues)
+{
+    double total = 0;
+    Random rand = new Random();
+
+    for (long values = 0; values < noOfValues; values++)
+    {
+        total = total + rand.NextDouble();
+    }
+
+    return total / noOfValues;
+}
+
+private void StartButton_Click(object sender, RoutedEventArgs e)
+{
+    long noOfValues = long.Parse(NumberOfValuesTextBox.Text);
+    ResultTextBlock.Text = "Result: " + computeAverages(noOfValues);
+}
+</pre>
+
+
+                        <li>
+                            Ingresar una gran cantidad de promedios hace que toda la interfaz de usuario se bloquee mientras el programa ejecuta el controlador de
+                            eventos detrás del botón "Inicio". El botón parece estar "bloqueado" durante el tiempo que tarda el controlador de eventos en ejecutarse y
+                            las interacciones con la interfaz de usuario, por ejemplo, cambiar el tamaño de la pantalla de la aplicación, no son posibles hasta que el
+                            botón "vuelva a aparecer" y se muestre la respuesta.
+                        </li>
+                        <li>
+                            Las tareas proporcionan un medio para resolver este problema. En lugar de realizar una acción directamente, el controlador de eventos puede
+                            iniciar una tarea para realizar la acción en segundo plano. El controlador de eventos luego regresa y la interfaz de usuario puede
+                            responder a otros eventos. El Listado 1-30 muestra cómo se puede usar una tarea para realizar el cálculo en segundo plano.
+                        </li>
+                        <li>
+                            La idea detrás de este código es que la acción de presionar un botón inicia una tarea que se completa en segundo plano.
+                            Esto significa que el botón no parece "pegarse" y bloquear la interfaz de usuario.
+                        </li>
+                        <br />
+                        <span class="badge badge-secondary">Listado 1-30</span>&nbsp;Usando tareas
+                        <hr>
+
+<pre>
+private void StartButton_Click(object sender, RoutedEventArgs e)
+{
+    long noOfValues = long.Parse(NumberOfValuesTextBox.Text);
+    Task.Run( () => {
+            ResultTextBlock.Text = "Result: " + computeAverages(noOfValues);
+        }
+    );
+}
+</pre>
+                        <li>
+                            Este código es correcto desde el punto de vista de la gestión de tareas, pero fallará cuando se ejecute. Esto se debe a que el
+                            proceso que genera la visualización gestiona estrictamente la interacción con los componentes de la pantalla. Una tarea en segundo
+                            plano no puede simplemente establecer las propiedades de un elemento de visualización; en su lugar, debe seguir un protocolo particular
+                            para lograr la actualización requerida. La Figura 1-2 muestra lo que sucede cuando la tarea intenta mostrar el resultado del cálculo.
+                        </li>
+                        <br />
+                        <span class="badge badge-secondary">Listado 1-31</span>&nbsp;Actualizando la UI
+                        <hr>
+
+<pre>
+private void StartButton_Click(object sender, RoutedEventArgs e)
+{
+    long noOfValues = long.Parse(NumberOfValuesTextBox.Text);
+    Task.Run(() => {
+        double result = computeAverages(noOfValues);
+
+        ResultTextBlock.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+        {
+            ResultTextBlock.Text = "Result: " + result.ToString();
+        });
+    });
+}
+</pre>
+                        <li>
+                            Cada componente en una pantalla tiene una propiedad Dispatcher que se puede usar para ejecutar tareas en el contexto de la pantalla.
+                            El método RunAsync tiene un nivel de prioridad para la tarea, seguido de la acción que se realizará en el hilo. En el caso del código en
+                            el Listado 1-31, la acción a realizar es mostrar el resultado.
+                        </li>
+                        <li>
+                            Tenga en cuenta que el código en el Listado 1-31 no muestra una buena práctica de programación. El método RunAsync está diseñado para
+                            llamarse de forma asíncrona (descubrirá lo que esto significa en la siguiente sección). El código en el Listado 1-31 no hace esto,
+                            lo que dará como resultado que se generen advertencias del compilador cuando cree el ejemplo. La mejor manera de mostrar un resultado de
+                            una tarea es hacer uso de <code>async</code> y <code>await</code>, como verá en la siguiente sección.
+                        </li>
+                    </ul>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>

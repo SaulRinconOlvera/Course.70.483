@@ -1,0 +1,76 @@
+﻿
+@{
+    ViewData["Title"] = "Index";
+    Layout = "_Layout";
+}
+
+<div class="row">
+    <div class="col">
+        <div class="card" style="margin: 20px;">
+            <div class="card-body">
+                <h5 class="card-title">Capitulo 1: Controlando el flujo de un programa</h5>
+                <h6 class="card-subtitle mb-2 text-muted">Tema 2: Manejar y administrar multihilos</h6>
+                <hr>
+                <p class="card-text">
+                    <h5>Sincronización de recursos</h5>
+                    <ul>
+                        <li>
+                            Cuando una aplicación se extiende sobre varias tareas asincrónicas, resulta imposible predecir la secuencia y el tiempo de acciones individuales.
+                            Debe crear aplicaciones con el entendimiento de que cualquier acción puede interrumpirse de una manera que tenga el potencial de dañar su aplicación.
+                        </li>
+                        <li>
+                            Comencemos con una aplicación simple que suma los números en una matriz. El Listado 1-41 crea una matriz que contiene los valores de 0 a 500,000,000.
+                            Luego usa un bucle for para calcular el total de la matriz.
+                        </li>
+                        <li>
+                            Cuando ejecutamos el programa, este imprime la suma del arreglo:
+                            <br />
+                            <br />
+                            <pre>The total is: 1250000025000000</pre>
+                        </li>
+                        <li>
+                            Esta es una solución de tarea única que tiene que funcionar a través de toda la matriz.
+                            Puede decidir hacer uso de los múltiples procesadores en su computadora y crear una solución que cree una serie de tareas, cada una de las cuales sumará un área particular de la matriz.
+                        </li>
+                        <li>
+                            El Listado 1-42 sirve como una actualización que muestra cómo se crean las tareas, y también ilustra cómo la sincronización de recursos puede causar
+                            problemas en una aplicación. Crea una serie de tareas, cada una de las cuales ejecuta el método addRangeOfValues, que agrega el contenido de un rango
+                            particular de valores en la matriz a un valor total. La idea es que la primera tarea agregará los valores en los elementos de 0 a 999, la segunda tarea
+                            agregará los valores en los elementos 1000 a 1999, y así sucesivamente en la matriz. El método principal crea todas las tareas y luego usa el método
+                            Task.WaitAll para hacer que el programa espere la finalización de todas las tareas.
+                        </li>
+                        <li>
+                            Puede esperar que el programa en el Listado 1-42 imprima el mismo valor que nuestro programa original.
+                            Sin embargo, cuando lo ejecuté en mi máquina, recibí lo siguiente:
+                        </li>
+                        <li>
+                            Aparentemente, no se realizaron muchas actualizaciones a la variable sharedTotal.
+                            ¿Que está sucediendo aquí? El problema se debe a la forma en que todas las tareas interactúan sobre el mismo valor compartido.
+                            Considere la siguiente secuencia de eventos:
+                        </li>
+                        <li class="segundo">
+                            La tarea número 1 comienza a realizar una actualización de sharedTotal. Obtiene el contenido de la variable sharedTotal en la Unidad Central de Procesador (CPU) y agrega el contenido de un elemento de matriz al valor de sharedTotal. Pero, justo cuando la CPU está a punto de volver a escribir el resultado en la memoria, el sistema operativo detiene la tarea número 1 y cambia a la tarea número 2.
+                        </li>
+                        <li class="segundo">
+                            La tarea número 2 también quiere actualizar sharedTotal. Obtiene el contenido de sharedTotal, le agrega el valor de un elemento de matriz y luego vuelve a escribir el resultado en la memoria. Ahora el sistema operativo devuelve el control a la tarea número 1.
+                        </li>
+                        <li class="segundo">
+                            La tarea número 1 escribe el valor compartido total en el que estaba trabajando desde la CPU en la memoria. Esto significa que la actualización realizada por la tarea número 2 se ha perdido.
+                        </li>
+                        <li>
+                            Esto se llama condición de carrera. Hay una carrera entre dos hilos, y el comportamiento del programa depende de qué hilos lleguen primero a la variable sharedTotal. Es imposible predecir qué hará un programa mal escrito como este. He visto situaciones en las que los programas que contienen este tipo de error funcionan perfectamente en un tipo de computadora y luego fallan cuando se ejecutan en una máquina que tiene un número menor o mayor de procesadores. Recuerde que la naturaleza de una solución asincrónica es que, como programadores, realmente no tenemos ningún control sobre el orden en que se pueden ejecutar las partes de nuestro sistema.
+                        </li>
+                        <li>
+                            Tenga en cuenta que este problema de subprocesos puede surgir incluso si usa declaraciones C# que parecen ser atómicas. La siguiente declaración agrega 1 a la variable x. Parece que es una operación atómica, pero en realidad implica leer, actualizar y almacenar el resultado, que son pasos que pueden interrumpirse y no realizarse correctamente debido a una condición de carrera.
+                        </li>
+                        <br />
+                        <pre>x + = 1; </pre>
+                        <li>
+                            En la sección anterior identificó la necesidad de colecciones concurrentes que pueden ser utilizadas por múltiples tareas asincrónicas. Estas colecciones se han implementado de una manera que evita problemas como el que se muestra en el Listado 1-42. Ahora investiguemos cómo garantizar que sus propios programas puedan funcionar correctamente en entornos de subprocesos múltiples.
+                        </li>
+                    </ul>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,178 @@
+﻿
+@{
+    ViewData["Title"] = "Index";
+    Layout = "_Layout";
+}
+
+<div class="row">
+    <div class="col">
+        <div class="card" style="margin: 20px;">
+            <div class="card-body">
+                <h5 class="card-title">Capitulo 1: Controlando el flujo de un programa</h5>
+                <h6 class="card-subtitle mb-2 text-muted">Tema 3: Implementar flujos de programa</h6>
+                <hr>
+                <p class="card-text">
+                    <h5>
+                        Iterando a través de colecciones
+                    </h5>
+                    <ul>
+                        <li>
+                            C# proporciona una serie de construcciones que pueden implementar comportamientos de bucle: el bucle while, el bucle do y el bucle for. Examinemos cada uno de estos a su vez.
+                        </li>
+                    </ul>
+                    <h6>
+                        La construcción del bucle while
+                    </h6>
+                    <ul>
+                        <li>
+                            Una construcción de bucle while realizará una declaración o bloque dado, mientras que una expresión lógica dada tiene un valor verdadero.
+                            El código en el Listado 1-52 es un ejemplo de un bucle infinito que nunca terminará.
+                        </li>
+                        <li>
+                            Este es un código C# completamente legal que escribirá Hello muchas veces. Por el contrario, el código aquí nunca escribirá Hello:
+                        </li>
+                        <li>
+                            Esto ilustra un aspecto importante del ciclo while. La condición que controla el comportamiento del bucle se prueba antes de que se
+                            obedezcan las declaraciones controladas por el bucle. El ciclo while (falso) generará una advertencia del compilador porque el compilador
+                            detectará que el ciclo contiene declaraciones que son inalcanzables. Una construcción while se puede usar con un contador para repetir una
+                            acción varias veces, como se muestra aquí:
+                        </li>
+                        <li>
+                            Esto imprimirá el mensaje de saludo 10 veces. Si desea utilizar un contador de esta manera,
+                            debe utilizar un bucle for, que se describe a continuación. Un ciclo while es muy efectivo cuando se crea un consumidor de datos.
+                            La construcción luego consume datos mientras está disponible.
+                        </li>
+                    </ul>
+                    <h6>
+                        La construcción del bucle <code>do–while</code>
+                    </h6>
+                    <ul>
+                        <li>
+                            La construcción del bucle do– hile también utiliza una expresión lógica para controlar la ejecución de un enunciado o bloque dado.
+                            Sin embargo, en el caso de este bucle, la condición se prueba después de que el bloqueo se haya realizado una vez.
+                            El código en el Listado 1-53 muestra una construcción do-while.
+                        </li>
+                        <li>
+                            Lo importante a tener en cuenta sobre este código es que aunque la expresión lógica que lo controla es falsa, lo que significa que
+                            el bucle nunca se repetirá, el mensaje Hola se imprimirá una vez, ya que la impresión se realiza antes Se prueba la expresión lógica.
+                        </li>
+                        <li>
+                            Una construcción do-while es útil cuando desea crear código que recupere datos continuamente hasta que se ingrese un valor válido:
+                        </li>
+                    </ul>
+                    <h6>
+                        La construcción del bucle <code>for</code>
+                    </h6>
+                    <ul>
+                        <li>
+                            Un bucle que no es infinito (uno que debería terminar en algún momento) puede estar compuesto por tres cosas:
+                        </li>
+                        <li class="segundo">
+                            Inicialización que se realiza para configurar el bucle
+                        </li>
+                        <li class="segundo">
+                            Una prueba que determinará si el bucle debe continuar
+                        </li>
+                        <li class="segundo">
+                            Una actualización que se realizará cada vez que se realice la acción del bucle
+                        </li>
+                        <li>
+                            El bucle for proporciona una forma de crear estos Tres elementos en una sola construcción.
+                            El listado 1-54 muestra cómo funciona esto. Cada una de las acciones realizadas en un método que se llama mediante la construcción
+                            del bucle.
+                        </li>
+                        <li>
+                            Esta salida muestra que se realiza una prueba inmediatamente después de la inicialización, por lo que es posible que la instrucción
+                            controlada por el bucle nunca se realice. Esto ilustra un aspecto muy importante de la construcción del bucle for, ya que los
+                            comportamientos de inicialización, prueba y actualización pueden ser cualquier cosa que desee.
+                        </li>
+                        <li>
+                            A continuación se muestra un uso más convencional de la construcción del bucle for para repetir una acción cinco veces. Se crea una
+                            variable local para el código que se repetirá dentro del ciclo for. Esta variable, llamada contador, se imprime con el código en el bucle.
+                        </li>
+                        <li>
+                            Puede omitir cualquiera de los elementos de un bucle for. También puede realizar varias declaraciones para los elementos de inicialización,
+                            actualización y prueba. Las declaraciones están separadas por una coma. Tenga en cuenta que si bien es posible hacer cosas exóticas como
+                            esta, le aconsejo que no lo haga en sus programas.
+                        </li>
+                        <li>
+                            La programación no es un lugar para mostrar lo inteligente que eres, porque es más importante que sea un lugar donde crees código que sea
+                            fácil de entender. Es muy poco probable que su construcción "inteligente" sea más eficiente que una construcción mucho más simple.
+                            E incluso si su construcción inteligente es un poco más rápida, el tiempo de persona (el tiempo que pasa alguien tratando de entender su
+                            código "inteligente") es mucho más costoso que el tiempo de computadora.
+                        </li>
+                    </ul>
+                    <h6>
+                        La construcción foreach
+                    </h6>
+                    <ul>
+                        <li>
+                            Es perfectamente posible utilizar un bucle for para iterar a través de una colección de elementos. El listado 1-55 muestra cómo un bucle
+                            for puede crear una variable de índice utilizada para obtener elementos sucesivos en una matriz de nombres.
+                        </li>
+                        <li>
+                            La construcción foreach hace que recorrer una colección sea mucho más fácil. El listado 1-56 muestra cómo se usa una construcción foreach.
+                            Cada vez alrededor del ciclo, el valor del nombre se carga con el siguiente nombre en la colección.
+                        </li>
+                        <li>
+                            Observe cómo el tipo del valor iterativo debe coincidir con el tipo de los elementos de la colección.
+                            En otras palabras, el siguiente código genera un error de compilación, porque la matriz de nombres contiene una colección de cadenas,
+                            no enteros.
+                        </li>
+                        <li>
+                            No es posible que el código en una construcción foreach modifique el valor iterativo. El siguiente código, que intenta convertir
+                            la lista de nombres en mayúsculas, no se compila.
+                        </li>
+                        <li>
+                            Si el bucle foreach está trabajando en una lista de referencias a objetos, los objetos en los extremos de esas referencias se pueden
+                            cambiar. El código en el Listado 1-57 funciona a través de una lista de objetos Persona, cambiando la propiedad Nombre de cada persona
+                            en la lista a mayúsculas. Esto se compila y se ejecuta correctamente.
+                        </li>
+                        <li>
+                            La construcción foreach puede iterar a través de cualquier objeto que implemente la interfaz IEnumerable. Estos objetos exponen un método
+                            llamado GetIterator (). Este método debe devolver un objeto que implemente la interfaz System.Collections.IEnumerator. Esta interfaz expone
+                            métodos que la construcción foreach puede usar para obtener el siguiente elemento del enumerador y determinar si hay más elementos en la
+                            colección. Muchas clases de colección, incluidas listas y diccionarios, implementan la interfaz IEnumerable. En el capítulo 2, "Crear e
+                            implementar una jerarquía de clases", descubrirá cómo crear una clase que implemente la interfaz IEnumerable.
+                        </li>
+                        <li>
+                            Tenga en cuenta que la iteración se puede implementar de forma "perezosa"; el siguiente elemento que se iterará solo debe recuperarse
+                            cuando se solicite. Los resultados de las consultas de la base de datos se pueden devolver como objetos que implementan la interfaz
+                            IEnumerable y luego solo obtienen los elementos de datos reales cuando es necesario. Es importante que el elemento que se está iterando
+                            no se cambie durante la iteración, si el código iterativo intentó eliminar elementos de la lista que estaba iterando a través de esto,
+                            el programa generaría una excepción cuando se ejecutara.
+                        </li>
+                    </ul>
+                    <h6>
+                        La instrucción <code>break</code>
+                    </h6>
+                    <ul>
+                        <li>
+                            Cualquiera de las construcciones de bucle anteriores se puede terminar antes mediante el uso de una declaración de interrupción.
+                            Cuando se alcanza la declaración de interrupción, el programa sale inmediatamente del bucle. El listado 1-58 muestra cómo funciona el
+                            descanso. El ciclo finaliza cuando alcanza el nombre de "David".
+                        </li>
+                        <li>
+                            Un ciclo puede romper muchas declaraciones, pero desde un punto de vista de diseño, esto se debe desalentar porque puede dificultar
+                            mucho más discernir el flujo a través del programa.
+                        </li>
+                    </ul>
+                    <h6>
+                        La instrucción <code>continue</code>
+                    </h6>
+                    <ul>
+                        <li>
+                            La instrucción de continuación no hace que finalice un bucle. En cambio, finaliza el paso actual a través del código controlado por el
+                            bucle. La condición de terminación se prueba para determinar si el ciclo debe continuar. El listado 1-59 muestra cómo se usa continuar.
+                            El programa no imprimirá el nombre "David" porque se activará la instrucción condicional, causando que se ejecute la instrucción de
+                            continuación y abandonando ese paso a través del bucle.
+                        </li>
+                        <li>
+                            Decisiones del programa A medida que se ejecuta un programa, puede tomar decisiones. Hay dos construcciones de programa que se pueden usar para ejecutar código condicionalmente: la construcción if y la construcción switch.
+                        </li>
+                    </ul>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>

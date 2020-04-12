@@ -1,0 +1,60 @@
+﻿
+@{
+    ViewData["Title"] = "Index";
+    Layout = "_Layout";
+}
+
+<div class="row">
+    <div class="col">
+        <div class="card" style="margin: 20px;">
+            <div class="card-body">
+                <h5 class="card-title">Capitulo 1: Controlando el flujo de un programa</h5>
+                <h6 class="card-subtitle mb-2 text-muted">Tema 4: Crear e implementar eventos y callbacks</h6>
+                <hr>
+                <p class="card-text">
+                    <h5>Tipos de excepción</h5>
+                    <ul>
+                        <li>
+                            Un programa puede indicar una condición de error lanzando un objeto de excepción que puede ser detectado por un controlador de excepción. 
+                            El propósito del controlador de excepciones es mitigar el efecto de la excepción. La entrega de una excepción puede implicar acciones tales 
+                            como alertar al usuario (si corresponde), crear una entrada de registro, liberar recursos y tal vez incluso cerrar la aplicación de manera 
+                            bien administrada.
+                        </li>
+                        <li>
+                            Si un controlador de excepciones no detecta una excepción dentro del programa, será capturada por el entorno .NET y hará que el hilo o la 
+                            tarea finalicen. Las excepciones no detectadas pueden hacer que los subprocesos y las tareas fallen silenciosamente sin mensaje para el 
+                            usuario. Una excepción no detectada lanzada en el subproceso de primer plano de una aplicación hará que la aplicación finalice. Se pueden 
+                            anidar excepciones. Cuando se produce una excepción, el tiempo de ejecución de .NET busca en la pila de llamadas para encontrar el 
+                            controlador de excepciones "más cercano" para tratar la excepción. Este es un proceso comparativamente lento, lo que significa que las 
+                            excepciones no deben usarse para errores de "ejecución de la fábrica", sino que solo se invocan en circunstancias excepcionales.
+                        </li>
+                        <li>
+                            Una excepción particular es descrita por un objeto, que se pasa al elemento controlador de excepciones de un programa. El tipo principal de 
+                            todos los objetos de excepción es la clase Excepción. Hay muchos tipos de excepciones que describen condiciones de error particulares. 
+                            Comience por considerar las excepciones que se generan cuando un programa usa elementos de las bibliotecas .NET.
+                        </li>
+                        <li class="segundo">
+                            Las excepciones de entrada / salida (IOException) se generan durante las operaciones de entrada / salida.
+                        </li>
+                        <li class="segundo">
+                            Las excepciones SQL (lenguaje de consulta estructurado) (SqlException) se generan en respuesta a una consulta SQL no válida. El objeto de 
+                            excepción SQL contiene una lista de elementos SqlError que describen el error que ocurrió. En el caso de una excepción SQL generada por una 
+                            consulta LINQ, la excepción real no se generará durante la ejecución de la declaración que contiene la expresión de consulta. 
+                            Se producirá dentro del código que está iterando a través del resultado devuelto por la expresión. LINQ solo comienza a evaluar la consulta 
+                            cuando se solicitan los resultados.
+                        </li>
+                        <li class="segundo">
+                            Las excepciones de comunicaciones (CommunicationsException) se generan durante las operaciones de Windows Communication Framework (WCF) y 
+                            las excepciones de tiempo de espera de la red (TimeOutExceptions) se generan cuando una operación de red tarda demasiado en competir.
+                        </li>
+                        <li>
+                            Como veremos en la siguiente sección, es posible manejar específicamente un tipo de excepción particular agregando una cláusula catch 
+                            coincidente. La firma de un método dado no indica si el método generará o no excepciones, por lo tanto, al usar métodos, un programador 
+                            debe verificar cuidadosamente la documentación del método para determinar si se requiere o no el manejo de excepciones.
+                        </li>
+                    </ul>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>

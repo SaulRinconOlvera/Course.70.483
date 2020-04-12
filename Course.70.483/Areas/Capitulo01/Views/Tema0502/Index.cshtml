@@ -1,0 +1,692 @@
+﻿
+@{
+    ViewData["Title"] = "Index";
+    Layout = "_Layout";
+}
+
+<div class="row">
+    <div class="col">
+        <div class="card" style="margin: 20px;">
+            <div class="card-body">
+                <h5 class="card-title">Capitulo 1: Controlando el flujo de un programa</h5>
+                <h6 class="card-subtitle mb-2 text-muted">Tema 4: Crear e implementar eventos y callbacks</h6>
+                <hr>
+                <p class="card-text">
+                    <h5>La construcción de try-catch</h5>
+                    <ul>
+                        <li>
+                            El manejo de excepciones de construcción try-catch se realiza colocando el código que se protegerá en un bloque que sigue a la palabra clave try.
+                            Este bloque de código puede ir seguido de un código de controlador de excepción, precedido por una palabra clave catch. El controlador de excepciones se
+                            ejecuta en caso de que se produzca una excepción. El listado 1-76 muestra cómo funciona esto. Contiene un programa que lee una cadena de texto del usuario y
+                            utiliza el método Parse de la clase int para convertir el texto en un entero. Este método generará una excepción si no puede convertir la cadena en un entero
+                            válido.
+                        </li>
+                        <li>
+                            El programa en el Listado 1-76 no usa el objeto de excepción que se produce cuando se lanza la excepción. El programa en el Listado 1-77 detecta la excepción
+                            y usa las propiedades Message y StackTrace de la excepción para generar un mensaje de error.
+                        </li>
+                        <li>
+                            A la palabra clave catch le sigue el tipo de excepción que se capturará y el nombre que se utilizará para referirse al objeto de excepción durante el
+                            controlador de excepciones. En el Listado 1-77, el valor de ex se establece para hacer referencia a la excepción que genera el método Parse si falla. Si el
+                            usuario ingresa un número no válido, la salida del programa aparecerá como se muestra a continuación. La primera línea de la salida muestra el mensaje de
+                            error y StackTrace proporciona la posición en el programa en el que ocurrió el error. La propiedad HelpLink se puede configurar para proporcionar más
+                            información sobre la excepción. La propiedad TargetSite proporciona el nombre del método que causa la excepción, y la propiedad Source proporciona el nombre
+                            de la aplicación que causó el error, o el nombre del ensamblado si el nombre de la aplicación no se ha establecido. La salida aquí muestra el resultado de la
+                            excepción.
+                        </li>
+                        <li>
+                            Ingrese un número entero: fred Mensaje: la cadena de entrada no tenía el formato correcto.
+                        </li>
+                    </ul>
+                    <h5>Usando la clase base de una excepción</h5>
+                    <ul>
+                        <li>
+                            El ejemplo en el Listado 1-77 captura todas las excepciones porque la clase Excepción es la clase base de todos los tipos de excepción. El programa en el
+                            Listado 1-78 lee un número entero y luego realiza una división entera, dividiendo 1 por el número ingresado. Esta acción puede generar dos excepciones;
+                            el usuario podría no ingresar un número válido o el usuario podría ingresar el valor 0, lo que causará una excepción dividir por cero. El programa también
+                            contiene un tercer elemento catch, que detectará cualquier otra excepción que pueda generar este código. El orden de los elementos de captura es importante.
+                            Si el primer elemento catch detecta el tipo Exception, el compilador generará el error "Una cláusula catch anterior ya detecta todas las excepciones de este
+                            o de un tipo super (" Excepción ")". Debe colocar el tipo de excepción más abstracto al final de la secuencia.
+                        </li>
+                        <li>
+                            Tenga en cuenta que no todos los errores aritméticos arrojarán una excepción en este punto del código; Si se realiza la misma división utilizando el tipo
+                            de coma flotante o de doble precisión, el resultado se evaluará como "infinito".
+                        </li>
+                    </ul>
+                    <h5>Implementar bloques try-catch-finally</h5>
+                    <ul>
+                        <li>
+                            La construcción de prueba puede contener un elemento finalmente que identifica el código que se ejecutará independientemente de lo que suceda en la
+                            construcción de prueba. El programa en el Listado 1-79 muestra el mensaje de agradecimiento, independientemente de si se produce alguna excepción cuando se
+                            ejecuta el programa.
+                        </li>
+                        <li>
+                            Tenga en cuenta que el código en este bloque está garantizado para ejecutarse independientemente de lo que ocurra durante la construcción de prueba. Esto
+                            incluye situaciones en las que el código en la construcción vuelve a un método de llamada o el código en los manejadores de excepciones hace que se generen
+                            otras excepciones. El último bloque es donde un programa puede liberar cualquier recurso que pueda estar usando.
+                        </li>
+                        <li>
+                            La única situación en la que un bloque finalmente no se ejecutará es:
+                        </li>
+                        <li class="segundo">
+                            Si el código anterior (ya sea en el bloque try o en un controlador de excepciones) ingresa un bucle infinito.
+                        </li>
+                        <li class="segundo">
+                            Si el programador usa el método Environment.FailFast en el código protegido por la construcción try para solicitar explícitamente que se ignoren los elementos finales.
+                        </li>
+                    </ul>
+                    <h5>Lanzar excepciones</h5>
+                    <ul>
+                        <li>
+                            Un programa puede crear y lanzar sus propias excepciones utilizando la instrucción throw para lanzar una instancia de excepción. El constructor de objetos de
+                            excepción acepta una cadena que se utiliza para entregar un mensaje descriptivo al controlador de excepciones. El programa en el Listado 1-80 arroja una
+                            excepción y la captura, mostrando el mensaje.
+                        </li>
+                    </ul>
+                    <h5>Relanzando una excepción</h5>
+                    <ul>
+                        <li>
+                            Uno de los principios fundamentales del diseño de excepción es que detectar una excepción no debe conducir a que se oculten errores de otras partes de una
+                            aplicación. A veces se detectará una excepción que debe "pasar" a un controlador de excepciones adjunto. Esto puede deberse a que el controlador de bajo
+                            nivel no reconoce la excepción, o puede deberse a que un controlador de un nivel superior también debe ser alertado de la excepción que se produce. Se puede
+                            volver a generar una excepción utilizando la palabra clave throw sin parámetro:
+                            <pre>
+throw;
+</pre>
+                        </li>
+                        <li>
+                            Puede pensar que al volver a lanzar una excepción, debe dar el objeto de excepción para que se vuelva a lanzar, como se muestra aquí:
+                        </li>
+
+                        <li>
+                            Esta es una mala práctica porque eliminará la información de seguimiento de la pila que forma parte de la excepción original y la reemplazará con información
+                            de seguimiento de la pila que describa la posición alcanzada en el código del controlador de excepciones. Esto hará que sea más difícil determinar qué sucede
+                            cuando se produce el error, porque la ubicación del error se informará como en su controlador, en lugar de en el punto en el que se generó la excepción
+                            original
+                        </li>
+                        <li>
+                            Excepciones internas
+                        </li>
+                        <li>
+                            Another way to manage the propagation of error conditions in an application is to pass the original exception object as an inner exception for a higher-level
+                            exception handler to deal with. The Exception class contains an InnerException property that can be set when the exception is constructed. The constructor
+                            for the newly created exception is given a reference to the original exception.
+                        </li>
+                        <li>
+                            Crear excepciones personalizadas
+                        </li>
+                        <li>
+                            Al diseñar una aplicación, también debe decidir (y diseñar) cómo responderá la aplicación a cualquier condición de error. Esto puede incluir la creación de
+                            tipos de excepción personalizados para su programa. El nombre de la clase de excepción debe terminar con "Excepción". La clase CalcException en el Listado
+                            1-81 contiene un valor de código de error que se establece cuando se construye la excepción. Este código de error se puede usar en el controlador de
+                            excepciones.
+                        </li>
+                        <li>
+                            Cláusulas condicionales en bloques de captura
+                        </li>
+                        <li>
+                            Un controlador de excepciones puede volver a lanzar una excepción si no está en condiciones de lidiar con la excepción. Viste esto en la sección "Lanzar
+                            excepciones" anteriormente en este capítulo. Una alternativa para volver a lanzar una excepción es crear un controlador que solo capture excepciones que
+                            contengan valores de datos particulares.
+                        </li>
+                        <li>
+                            El código en el Listado 1-82 muestra cómo se logra esto. La palabra clave when es seguida por una cláusula condicional que realiza una prueba en el objeto de
+                            excepción. El controlador de excepciones solo se activará en caso de que se produzca una excepción que tenga una propiedad Error establecida en DivideByZero.
+                            Se ignora una excepción con cualquier otro código de error y, en el caso del programa de ejemplo, hará que el programa finalice inmediatamente ya que se ha
+                            lanzado una excepción no controlada.
+                        </li>
+                        <li>
+                            Si se ejecuta el programa en el Listado 1-82, mostrará el mensaje: "Divide por cero error". Si el valor de error en la instrucción throw se cambia de
+                            DivideByZero a InvalidNumberText, el programa fallará con una excepción no controlada.
+                        </li>
+                        <li>
+                            Este mecanismo es más eficiente que volver a lanzar una excepción, porque el tiempo de ejecución de .NET no tiene que reconstruir el objeto de excepción
+                            antes de volver a lanzarlo.
+                        </li>
+                        <li>
+                            Manejo de excepciones internas
+                        </li>
+                        <li>
+                            Una excepción puede contener una propiedad de excepción interna que se establece cuando se construye. Un controlador de excepciones puede extraer esto y
+                            usarlo como parte del proceso de administración de excepciones. El programa en el Listado 1-83 contiene un controlador de excepciones que genera una nueva
+                            excepción que contiene una excepción interna que describe el error. Si el usuario ingresa texto que no se puede analizar en un entero, se genera una
+                            excepción que se captura y luego se genera una nueva excepción con el error "Error de calculadora". La nueva excepción contiene la excepción original como
+                            una excepción interna. La nueva excepción se captura y se muestra.
+                        </li>
+                        <li>
+                            Note that the use of inner exceptions must be planned, because handlers must be expecting the inner exception to refer to meaningful information about the
+                            error that has occurred.
+                        </li>
+                        <li>
+                            Manejo de excepciones agregadas
+                        </li>
+                        <li>
+                            Algunos tipos de excepciones .NET contienen listas de excepciones internas. Estas se llaman "excepciones agregadas". Ocurren cuando más de una cosa puede
+                            fallar a medida que se realiza una operación, o cuando los resultados de una serie de acciones deben combinarse.
+                        </li>
+                        <li>
+                            The program in Listing1-84 shows a situation in which aggregate exceptions are used to deliver results from a method that is called to read the text from a
+                            web page. The AgregateException is caught and the message from each exception is displayed.
+                        </li>
+                        <li>
+                            También ha visto el uso de excepciones agregadas al considerar cómo tratar las excepciones generadas por consultas paralelas de LINQ
+                            (LISTING_1_10_Exceptions_in_PLINQ) y al agregar excepciones generadas durante los manejadores de eventos (LISTING_1_70_Aggregating_ excepciones).
+                        </li>
+                        <li>
+                            Excepciones como parte de la entrega de errores gestionados
+                        </li>
+                        <li>
+                            Debes asegurarte de que tu código se ocupe de cualquier excepción que pueda ser lanzada por métodos, propagando la excepción hacia adelante si es necesario
+                            para asegurarte de que los eventos de excepción no estén ocultos de diferentes partes de tu aplicación.
+                        </li>
+                        <li>
+                            Sus métodos también deberían arrojar excepciones en situaciones en las que no tiene sentido continuar con una acción. Si un método arroja una excepción,
+                            la persona que llama debe tratar con esa excepción si el programa debe continuar ejecutándose. Sin embargo, si un método devuelve un código de error cuando algo sale mal, la persona que llama puede ignorar este código de error.
+                        </li>
+                        <li>
+                            Es importante que considere cómo administrar las condiciones de error durante el diseño de una aplicación. Es muy difícil agregar administración de errores a
+                            una aplicación una vez que se ha creado.
+                        </li>
+                        <li>
+                            Experimentos de pensamiento
+                        </li>
+                        <li>
+                            En estos experimentos mentales, demuestre sus habilidades y conocimiento de los temas tratados en este capítulo. Puede encontrar las respuestas a estos
+                            experimentos mentales en la siguiente sección.
+                        </li>
+                        <li>
+                            1 Uso de múltiples tareas
+                        </li>
+                        <li>
+                            En la etapa de diseño de una aplicación, tendrá que decidir si / cómo usar tareas e hilos. Aquí hay algunas preguntas que le gustaría tener en cuenta:
+                            1. Dadas las dificultades en la sincronización y administración, ¿vale la pena el esfuerzo para implementar aplicaciones usando múltiples tareas?
+                            2. ¿Aún vale la pena el esfuerzo de usar tareas múltiples si solo tiene un procesador en su computadora?
+                            3. ¿Qué tipo de aplicaciones se benefician más del uso de aplicaciones multitarea?
+                            4. ¿Hay situaciones en las que realmente no deberías usar la multitarea?
+                            5. Necesito un proceso en segundo plano que comprima una gran cantidad de archivos de datos. ¿Debo usar una tarea o un hilo?
+                            6. ¿Cuál es la diferencia entre el método WaitAll y WaitAny cuando se espera que se complete una gran cantidad de tareas?
+                            7. ¿Cuál es la diferencia entre una tarea de continuación y una tarea secundaria?
+                            8. ¿Cuál es la diferencia entre los métodos WaitAll y WhenAll?
+                            9. ¿Qué sucede cuando se espera una llamada al método?
+                            10. ¿Qué tiene de especial una colección concurrente?
+                        </li>
+                        <li>
+                            2 Administración de subprocesos múltiples Las aplicaciones de subprocesos múltiples deberán considerar especialmente la forma en que se procesan los datos y
+                            el orden de las operaciones. También deberán contener disposiciones para la gestión de procesos.
+                        </li>
+                        <li>
+                            Aquí hay algunas preguntas que le gustaría considerar:
+                            1. ¿Los errores de programa causados ​​por una implementación de subprocesos múltiples siempre se manifestarán como fallas en una aplicación?
+                            2. ¿El hecho de que el procesador esté repentinamente al 100% de carga indica que dos procesos están atrapados en un abrazo mortal?
+                            3. ¿Podría hacer que un objeto sea seguro al encerrar el código del cuerpo de todos los métodos en las instrucciones de bloqueo para que todas las acciones del método sean atómicas?
+                            4. Si no está seguro acerca de las posibles condiciones de carrera, ¿es mejor agregar declaraciones de bloqueo alrededor de las secciones críticas de su código "por si acaso"
+                            5. ¿Debería una tarea generar siempre una excepción si se cancela?
+                            6. ¿Podría hacer una aplicación que cancele automáticamente los procesos de punto muerto?
+                        </li>
+                        <li>
+                            3 Flujo del programa El lenguaje C# proporciona construcciones que el programador puede usar para administrar el flujo de ejecución del programa.
+                            Las declaraciones pueden repetirse un número dado de veces, hasta que se haya alcanzado un estado específico, o sobre una colección de artículos.
+                            Las declaraciones pueden ejecutarse condicionalmente usando la construcción if, o seleccionarse sobre la base de una variable de control particular en el
+                            caso de un interruptor.
+                        </li>
+                        <li>
+                            Aquí hay algunas preguntas que le gustaría tener en cuenta:
+                            1. ¿Es necesario tener la construcción de bucles while y do-while?
+                            2. ¿Es una declaración de interrupción la única forma de salir de un ciclo antes de que se complete?
+                            3. ¿Puedes identificar una situación en la que usarías un bucle for para recorrer una colección en lugar de un bucle foreach?
+                            4. El operador lógico y (&) y el operador lógico o (|) tienen versiones de "cortocircuito" (&& y ||), que solo evalúan elementos hasta que se pueda determinar si una expresión dada es verdadera o falsa. ¿Por qué el operador exclusivo o (^) no tiene una versión de cortocircuito?
+                            5. ¿Es cierto que cada operador de C # tiene un comportamiento que es el mismo para cada contexto en el que se utiliza?
+                            6. ¿Siempre puede estar seguro de la secuencia precisa de operaciones cuando se evalúa una expresión?
+                        </li>
+                        <li>
+                            4 eventos y devoluciones de llamada
+                        </li>
+                        <li>
+                            Los programadores pueden usar delegados para crear aplicaciones a partir de objetos "poco acoplados" que se comunican por eventos de mensaje. Un objeto puede
+                            suscribirse a eventos publicados por otro objeto que expone a un delegado.
+                        </li>
+                        <li>
+                            Una expresión lambda se puede usar para crear "funciones anónimas" que existen como comportamientos puros. Se puede hacer que los delegados se refieran a
+                            funciones anónimas.
+                        </li>
+                        <li>
+                            Aquí hay algunas preguntas que le gustaría considerar:
+                            1. ¿Cómo funciona realmente un delegado?
+                            2. ¿Qué sucede si un delegado es asignado a un delegado?
+                            3. ¿Qué sucede si un delegado se asigna a sí mismo?
+                            4. ¿Existe un límite superior para el número de suscriptores que puede tener un delegado de editor?
+                            5. ¿Qué hace realmente el operador lambda (=>)?
+                            6. ¿Puede el código en una expresión lambda acceder a los datos del código adjunto?
+                        </li>
+                        <li>
+                            5 excepciones
+                        </li>
+                        <li>
+                            Las excepciones son una parte importante del desarrollo de aplicaciones. Como mínimo, una aplicación tendrá que manejar excepciones que pueden ser producidas
+                            por los métodos .NET que utiliza. Para una aplicación grande, es posible que deba diseñar tipos de excepción personalizados y crear una estrategia de manejo
+                            de errores que administre cómo se propagan y administran las excepciones. Es importante poner las excepciones en la perspectiva correcta; cualquier error con
+                            el que espere que el sistema se ocupe en el curso normal de los eventos no debe manejarse mediante el uso de una excepción, deben reservarse para situaciones
+                            en las que no es significativo que la aplicación continúe.
+                        </li>
+                        <li>
+                            Aquí hay algunas preguntas que le gustaría considerar:
+                            1. ¿Es un método que recibe una fecha del "31 de febrero" algo que debería causar una excepción?
+                            2. ¿Debo asegurarme de que mi programa siempre capture todas las excepciones?
+                            3. ¿Puede volver al código después de que se haya detectado una excepción?
+                            4. ¿Por qué necesitamos la cláusula finalmente? ¿No se puede ejecutar el código después del código en una cláusula de prueba simplemente después del final de la captura?
+                            5. ¿Mi aplicación siempre debe usar excepciones personalizadas?
+
+                        </li>
+                        <li>
+                            Aunque el experimento responde
+                        </li>
+                        <li>
+                            Esta sección proporciona las soluciones para las tareas incluidas en los experimentos mentales.
+                        </li>
+                        <li>
+                            1 Uso de múltiples tareas
+                        </li>
+                        <li>
+                            1. Dividir una aplicación en tareas separadas no es solo algo que haría para aprovechar las ventajas de rendimiento. Las tareas proporcionan un nivel de abstracción muy útil.
+                            Una vez que se ha diseñado la comunicación entre las tareas, se puede trabajar en cada una de forma independiente. Particionar una aplicación en tareas puede verse como una
+                            extensión natural del diseño basado en componentes.
+                        </li>
+                        <li>
+                            2. Considere un programa que realiza un análisis numérico de un conjunto de datos en particular. Una vez que los datos se han cargado en la memoria, el tiempo que tarda en
+                            procesarse está determinado por la velocidad de la CPU. Diríamos que este programa estaba vinculado a la CPU. Si un sistema solo tiene un procesador, la conversión del
+                            programa para usar una implementación de subprocesos múltiples no mejoraría la velocidad a la que se procesan los datos. Sin embargo, considere un programa que interactúa
+                            continuamente con el sistema de archivos. Diríamos que esta aplicación estaba vinculada a IO (entrada / salida), ya que la velocidad a la que puede funcionar está determinada
+                            por el rendimiento del sistema de archivos. Cuando un programa vinculado a IO está activo, con frecuencia no podrá realizar ningún trabajo mientras espera que se completen las
+                            transacciones de archivos. Una solución de subprocesos múltiples podría realizar el procesamiento en los momentos en que una tarea estaba esperando que se completara una
+                            operación de entrada / salida.
+                        </li>
+                        <li>
+                            3. Una aplicación vinculada a la CPU se beneficiará de un enfoque multitarea si el sistema host tiene más de una CPU. Tenga en cuenta que el programador puede tener que dedicar
+                            un poco de esfuerzo a reelaborar la aplicación para permitirle realizar múltiples tareas. Una aplicación que contiene una combinación de tareas vinculadas a la CPU y a la IO
+                            puede beneficiarse más de un enfoque de subprocesos múltiples, ya que siempre habrá algo que el procesador pueda hacer.
+                        </li>
+                        <li>
+                            4. La naturaleza asincrónica de una aplicación multiproceso hace que sea muy difícil garantizar que una operación dada se completará dentro de un tiempo específico. Los hilos
+                            pueden tener niveles de prioridad, pero estos no son duros y rápidos. Las aplicaciones con requisitos críticos de tiempo no deben implementarse utilizando múltiples
+                            subprocesos.
+                        </li>
+                        <li>
+                            5. Al elegir entre tareas e hilos, debe considerar lo que desea lograr. Las tareas son buenas para los procesos en segundo plano. Los subprocesos se pueden usar para procesos
+                            en segundo plano, pero también se pueden ejecutar como procesos en primer plano. Las tareas son más fáciles de crear. En esta situación, una tarea tendría más sentido, porque
+                            sería más fácil de crear y nunca necesitará operar en primer plano.
+                        </li>
+                        <li>
+                            6. El método WaitAll regresará cuando se hayan completado todas las tareas que se están ejecutando. El método WaitAny volverá cuando se complete la primera de las tareas en
+                            ejecución.
+                        </li>
+                        <li>
+                            7. Una tarea de continuación es una tarea que se inicia cuando se completa una tarea existente. Una tarea secundaria es creada por una tarea principal y se ejecuta
+                            independientemente de la principal.
+                        </li>
+                        <li>
+                            8. El método WaitAll acepta una lista de referencias de tareas como argumento y regresa cuando todas las tareas se han completado. El método WaitAll no devuelve un resultado.
+                            El método WhenAll acepta una lista de referencias de Tarea como argumento y devuelve una Tarea que entrega los resultados devueltos por esas tareas. El método WhenAll se puede
+                            esperar, lo que permite su uso en código asincrónico.
+                        </li>
+                        <li>
+                            9. Los métodos que se pueden esperar devuelven una referencia a una tarea. Cuando un programa realiza una espera en un método asincrónico, el método
+                            asincrónico regresa inmediatamente. Cuando la tarea devuelta por el método esperado se complete, se completará el resto del método asincrónico. Un buen
+                            ejemplo de una situación en la que esto puede usarse con buenos resultados es en las interfaces de usuario. Un método de interfaz de usuario, por ejemplo,
+                            el código que implementa un comportamiento cuando se hace clic en un botón en la interfaz de usuario, debe regresar lo más rápido posible. De lo contrario,
+                            la interfaz de usuario dejará de responder. Al usar esperar, el controlador de clic de botón puede completarse y regresar, mientras que la acción iniciada
+                            por el clic de botón se ejecuta en paralelo.
+                        </li>
+                        <li>
+                            10. Una colección concurrente es aquella que tiene comportamientos que pueden ser utilizados por múltiples procesos al mismo tiempo. Algunas colecciones
+                            concurrentes, por ejemplo, ConcurrentDictionary, tienen comportamientos adicionales que permiten que los procesos solo realicen actualizaciones a los datos
+                            almacenados en la colección cuando es válido hacerlo.
+                        </li>
+                        <li>
+                            2 Gestión de subprocesos múltiples
+                        </li>
+                        <li>
+                            1- No hay garantía de que surjan las condiciones que podrían causar que una condición de carrera cause un problema. Los retrasos naturales en un sistema
+                            pueden significar que los eventos ocurren en un orden que significa que las condiciones de carrera no causan ningún problema. Por ejemplo, si una tarea
+                            está escribiendo un archivo en un disco, existe una buena probabilidad de que esta tarea tarde más en completarse que otra que está actualizando la pantalla.
+                            Sin embargo, los problemas pueden aparecer repentinamente cuando el usuario compra una unidad de disco más rápida o instala más memoria. Esto podría acelerar
+                            la acción de escritura y hacer que la aplicación se vuelva inestable. De hecho, estos síntomas son la mejor manera de diagnosticar problemas como este.
+                            La primera pregunta que debe hacerle a un usuario cuyo programa se ha vuelto repentinamente poco confiable es "¿Ha realizado algún cambio en el sistema
+                            subyacente?"
+                        </li>
+                        <li>
+                            2. La forma más simple de punto muerto se produce cuando dos tareas están esperando que se desbloqueen entre sí. Los puntos muertos más complejos se pueden
+                            distribuir en un mayor número de tareas. Sin embargo, cuando se produce un punto muerto, un programa no se está ejecutando muy rápidamente, de hecho, no está
+                            sucediendo nada, todas las tareas se esperan entre sí y la aplicación no está tomando tiempo del procesador.
+                        </li>
+                        <li>
+                            3. Hacer todas las llamadas a métodos en un objeto atómico es un enfoque muy duro y peligroso para lograr la seguridad del hilo. Bien puede hacer que una
+                            aplicación sea vulnerable a puntos muertos y también podría eliminar cualquier ventaja de rendimiento que se obtendría mediante el uso de múltiples
+                            procesadores. Además, no protege contra problemas causados por el uso de parámetros de referencia a un método.
+                        </li>
+                        <li>
+                            4. Agregar declaraciones de bloqueo alrededor de partes críticas del código sin pensar en lo que el código realmente hace es muy peligroso. Puede conducir
+                            a cuellos de botella y puntos muertos de rendimiento. Es muy difícil agregar seguridad de subprocesos a un programa una vez que se ha escrito. La única forma
+                            segura que he encontrado de escribir código seguro para subprocesos es diseñarlo de esa manera desde el principio.
+                        </li>
+                        <li>
+                            5. A task can be cancelled “silently”, in which case it will just end. Alternatively, it can be made to generate an exception when cancelled. From a design
+                            perspective I tend to regard cancelling a task as an exceptional action and would therefore expect there to be some way of propagating this event through the
+                            system so that it can be registered in some way.
+                        </li>
+                        <li>
+                            6. Si utiliza la construcción Monitor para gestionar la entrada en acciones atómicas, es posible que una tarea retenga el control cuando no logra bloquear y entrar una acción
+                            atómica. Incluso puede establecer un tiempo de espera agregando un valor de tiempo de espera a una llamada del método TryEnter para intentar ingresar una acción atómica.
+                            Por lo tanto, sería posible que un programa reconozca que un bloqueo dado no estuvo disponible durante más de un cierto período de tiempo. Luego podría usar un token de
+                            cancelación para intentar detener una tarea que podría haber obtenido el objeto de sincronización. Por supuesto, esto solo funcionaría correctamente si la tarea que está
+                            causando el punto muerto está verificando su token de cancelación mientras espera su bloqueo. En otras palabras, sí, sería posible hacer esto, pero implicaría mucho trabajo
+                            extra. La mejor manera de evitar puntos muertos es asegurarse de que no estén presentes en el diseño de su sistema.
+                        </li>
+                        <li>
+                            3 Flujo de programa
+                        </li>
+                        <li>
+                            1. Las construcciones de bucle while y do-while difieren en un solo aspecto. La construcción while no ejecutará ningún código si la condición de control es
+                            falsa, mientras que la construcción do-while prueba la condición de control al finalizar el ciclo, por lo que el código controlado por él siempre se ejecuta
+                            una vez, incluso si la condición de control es falsa al principio. A expensas de un programa un poco más complicado, es posible usar solo una forma de
+                            construcción de bucle, ambas se proporcionan para facilitar un poco la vida de los programadores.
+                        </li>
+                        <li>
+                            2. Si se usa una pausa en un bucle, el programa saldrá del bucle en ese punto. También es posible salir de un bucle volviendo del método en el que se declara
+                            el bucle. Finalmente, un programa saldrá de un ciclo si arroja una excepción dentro del ciclo.
+                        </li>
+                        <li>
+                            3. Una construcción foreach proporciona una forma muy conveniente de expresar la necesidad de enumerar cada uno de los elementos de una colección. Sin
+                            embargo, cada elemento enumerado se proporciona como "solo lectura". Si el programa quiere cambiar el valor de un elemento enumerado, es necesario utilizar
+                            un bucle for para acceder a cada elemento. Tenga en cuenta que si la construcción foreach está iterando a través de una colección de tipos de referencia, es
+                            perfectamente permisible cambiar las propiedades de cada elemento iterado.
+                        </li>
+                        <li>
+                            4. No existe una versión de cortocircuito del operador exclusivo u porque no es posible determinar si es exclusivo o verdadero simplemente examinando uno de
+                            los operandos. Recuerde que una operación exclusiva u devuelve verdadero si los dos operandos son diferentes. No es posible hacer esta determinación
+                            simplemente examinando uno de los operandos.
+                        </li>
+                        <li>
+                            5. No. Los operadores de C # tienen comportamientos diferentes según el contexto en el que se utilizan. Los tipos enteros y de coma flotante se mantienen de
+                            maneras muy diferentes en la memoria de la computadora. Cuando se utilizan operadores aritméticos entre estos tipos, el compilador seleccionará el operador
+                            correcto que se utilizará según el tipo de operandos en la expresión.
+                        </li>
+                        <li>
+                            6. El compilador de C # garantiza que las expresiones se evaluarán de acuerdo con las reglas de precedencia y asociabilidad para los operadores en la
+                            expresión. Sin embargo, la secuencia precisa en la que se realizan las operaciones no es algo sobre lo que un programador pueda hacer suposiciones.
+                        </li>
+                        <li>
+                            4 Eventos y devoluciones de llamada
+                        </li>
+                        <li>
+                            1. Un delegado es un tipo que puede referirse a un método en un objeto con una firma particular. Un delegado también puede contener listas de referencias de
+                            métodos. Se llama a un delegado exactamente de la misma manera que el método al que puede referirse. Si el delegado contiene una lista de referencias de
+                            métodos, cada método se llama sin ningún orden en particular. El tipo base de todos los objetos delegados es la clase Delegado.
+                        </li>
+                        <li>
+                            2. Los delegados pueden asignarse a otros delegados, siempre que tengan la misma firma. Los delegados también se pueden agregar a los suscriptores de un
+                            delegado multidifusión.
+                        </li>
+                        <li>
+                            3. Un delegado puede asignarse a sí mismo, pero esto no es algo sensato. Si alguna vez se llama al delegado, el programa entrará en un bucle infinito.
+                        </li>
+                        <li>
+                            4. No hay límite superior, más allá de la capacidad de la estructura de datos en la clase Delegado que contiene referencias a suscriptores.
+                        </li>
+                        <li>
+                            5. El operador lambda (=>) separa los elementos que entran en la expresión (los parámetros de entrada) de la instrucción o bloque de instrucción que
+                            implementa el comportamiento de la expresión lambda.
+                        </li>
+                        <li>
+                            6. El código en una expresión lambda puede acceder a las variables declaradas en el código que encierra la expresión lambda. Tenga en cuenta que el código en
+                            una expresión lambda no se ejecuta cuando se declara la expresión lambda, una referencia a la expresión lambda puede seguirse mucho más tarde. El compilador
+                            de C # generará código que mantiene las variables utilizadas por el código en la expresión lambda incluso si normalmente estarían fuera del alcance en el
+                            momento en que se realiza el código en la expresión lambda.
+                        </li>
+                        <li>
+                            5 Excepciones
+                        </li>
+                        <li>
+                            1. Todo depende del contexto de la acción. Si el usuario ingresa la fecha, es razonable que el programa muestre un mensaje de error y solicite que se vuelva
+                            a ingresar la fecha. En este caso no se lanzará ninguna excepción. Sin embargo, si la fecha se proporciona a un método que se espera que cree una transacción
+                            con esta fecha, es razonable que ese método arroje una excepción si se le da un valor de fecha no válido, ya que no sería significativo para el método generar
+                            cualquier cosa. Lanzar una excepción, en lugar de devolver un código de error o un valor nulo, es una forma de garantizar que el programa fallará de manera
+                            adecuada y maximiza las posibilidades de que se detecte el error. Desde una perspectiva de diseño, la necesidad de excepciones en esta situación se
+                            eliminaría por completo si el método que crea la transacción pasara una estructura DateTime. Esto solo puede contener una fecha válida.
+                        </li>
+                        <li>
+                            2. No. Solo hay una cosa peor que un programa que falla, y ese es un programa que falla silenciosamente. Puede pensar que es una buena idea incluir todo su
+                            programa en una construcción de prueba. Esto significaría que el programa nunca fallará debido a una excepción no detectada. Sin embargo, también haría que
+                            el programa sea imposible de depurar y propenso a fallar en silencio. Debe tener cuidado de detectar todas las excepciones con las que sabe cómo lidiar y
+                            dejar que pasen las restantes para que sean atrapadas por las capas superiores (de manera administrada y diseñada) o propagarse como errores que pueden
+                            detectarse y tratado con
+                        </li>
+                        <li>
+                            3. No hay forma de volver a las declaraciones después de que se haya lanzado una excepción. Si un programa quiere volver a intentar el código que puede
+                            generar excepciones, este código debe colocarse en un bucle.
+                        </li>
+                        <li>
+                            4. Necesitamos una cláusula final porque el código en la cláusula catch puede regresar de un método o lanzar otras excepciones, en cuyo caso el programa no
+                            alcanzará las declaraciones que siguen a la captura. La cláusula final está garantizada para ejecutarse en todas las circunstancias.
+                        </li>
+                        <li>
+                            5. El tipo de excepción estándar proporciona una gran flexibilidad; contiene un diccionario que se puede completar con pares de nombre-valor que describen
+                            un error. Los tipos de excepción personalizados pueden ser útiles si ninguno de los tipos de excepción existentes es adecuado para el contexto de excepción.
+                            Debido a que se pueden asignar diferentes cláusulas catch a diferentes tipos de excepciones, también hacen que las excepciones sean más fáciles de
+                            administrar.
+                        </li>
+                        <li>
+                            Resumen del capítulo
+                        </li>
+                        <li>
+                            ■ El subprocesamiento múltiple permite que una aplicación se componga de varios procesos cooperantes.
+                        </li>
+                        <li>
+                            ■ Cuando crea una aplicación multiproceso, sus comportamientos se distribuyen entre una serie de tareas de cooperación. Las tareas pueden realizarse en 
+                            paralelo si la computadora host tiene múltiples unidades centrales de procesador (CPU). Una sola CPU ejecutará cada tarea activa por turnos.
+                        </li>
+                        <li>
+                            ■ Crear una aplicación multiproceso puede ser tan simple como tomar un conjunto de acciones existente y usar la biblioteca Task.Parallel o Parallel LINQ 
+                            para ejecutar las acciones como tareas múltiples.
+                        </li>
+                        <li>
+                            ■ La clase de tarea .NET proporciona una abstracción de alto nivel de una tarea en ejecución. Las tareas pueden devolver valores y las tareas de continuación 
+                            pueden ejecutarse automáticamente cuando se completa una o más tareas. Las tareas también pueden iniciar tareas secundarias, con la tarea principal retenida 
+                            hasta que se hayan completado todas las tareas secundarias.
+                        </li>
+                        <li>
+                            ■ La clase .NET Thread proporciona una abstracción de nivel inferior de una tarea en ejecución. Los hilos no pueden devolver resultados, ni puedes crear 
+                            hilos de continuación. Sin embargo, los subprocesos pueden ejecutarse como procesos en primer plano o en segundo plano. Las tareas solo pueden ejecutarse 
+                            como procesos en segundo plano.
+                        </li>
+                        <li>
+                            ■ Async y wait hacen que sea muy fácil crear aplicaciones multiproceso. La palabra clave de espera precede a una llamada a un método que ha sido identificado 
+                            como asíncrono por la palabra clave asíncrona. Un método asincrónico puede devolver una tarea (si el método asincrónico devuelve nulo) o una tarea <tipo> 
+                            (si el método desea devolver un valor). El compilador generará código que permite que un método asincrónico regrese al llamador cuando se alcanza la palabra 
+                            clave de espera. Las declaraciones que siguen a la espera se realizarán simultáneamente. Esta forma de trabajar tiene un valor particular cuando se construye 
+                            la interfaz de usuario para un programa. Una acción asincrónica vinculada a la pulsación de un botón desbloqueará la interfaz de usuario en la primera 
+                            espera, en lugar de detener la interfaz de usuario hasta que la acción realizada por el botón se haya completado. Una aplicación puede detectar excepciones 
+                            lanzadas durante llamadas asincrónicas encerrando la acción esperada en un controlador de excepciones, pero esto solo funciona si la acción esperada devuelve 
+                            un valor. Por esta razón, se deben evitar las llamadas asíncronas anuladas ya que no hay forma de determinar si tuvieron éxito o no.
+                        </li>
+                        <li>
+                            ■ Las clases de colección .NET estándar no son seguras para subprocesos. Esto significa que si varias tareas intentan compartir datos usando una Lista, el 
+                            contenido de la lista se dañará. .NET Framework proporciona un conjunto de colecciones simultáneas que pueden ser compartidas por múltiples tareas activas. 
+                            La clase BlockingCollection proporciona un contenedor alrededor de las colecciones concurrentes ConcurrentStack, ConcurrentQueue y ConcurrentBag. Las tareas 
+                            que utilicen una BlockingCollection se bloquearán (pausarán) si no hay espacio para elementos adicionales o si intentan tomar elementos de una 
+                            colección vacía. Las colecciones simultáneas proporcionan versiones de "prueba" de métodos para extraer elementos que devuelven si una acción tuvo éxito o 
+                            no. Esto se debe a que en el tiempo transcurrido entre determinar que hay elementos disponibles y leerlos, es posible que otra tarea haya eliminado los 
+                            elementos. La clase ConcurrentDictionary proporciona métodos adicionales para la actualización condicional de elementos en el diccionario.
+                        </li>
+                        <li>
+                            ■ Las aplicaciones de subprocesos múltiples son vulnerables a las condiciones de carrera donde las acciones de una tarea en un elemento de datos compartidos 
+                            no se ejecutan hasta su finalización antes de que esa tarea sea reemplazada por otra.
+                        </li>
+                        <li>
+                            ■ Las condiciones de carrera se pueden abordar haciendo acciones atómicas, ya que siempre se completarán antes de que otra tarea pueda realizar la acción. 
+                            Esto se logra mediante el uso de objetos de bloqueo. Una tarea reclama el bloqueo y mientras lo tiene, otras tareas que intentan reclamar ese bloqueo e 
+                            ingresar el código atómico se bloquearán. Esto puede dar como resultado una cola de tareas bloqueadas que esperan que se libere un bloqueo en particular.
+                        </li>
+                        <li>
+                            ■ Se dice que dos tareas que esperan cerraduras entre sí están estancadas o en un abrazo mortal. Los puntos muertos pueden surgir como resultado de un código 
+                            que espera el acceso a un objeto de bloqueo dentro de una acción atómica. Esto debe abordarse con un buen diseño.
+                        </li>
+                        <li>
+                            ■ El mecanismo del monitor para el bloqueo se puede utilizar con preferencia a la palabra clave de bloqueo si una aplicación se beneficiaría de que las 
+                            tareas puedan determinar si pueden tener acceso a una acción atómica o no, en lugar de bloquearse tan pronto como intenten adquirir el bloquear.
+                        </li>
+                        <li>
+                            ■ Las acciones simples, como la actualización de una variable en particular, se pueden lograr mediante el uso de operaciones entrelazadas, en lugar de crear 
+                            bloques de código atómicos.
+                        </li>
+                        <li>
+                            ■ Las variables que pueden ser utilizadas por múltiples procesos pueden marcarse como "volátiles". Esto le indica al compilador que no realice una 
+                            optimización como el almacenamiento en caché del valor de la variable en un registro del procesador o el cambio del orden de las instrucciones.
+                        </li>
+                        <li>
+                            ■ Las tareas pueden cancelarse mediante el uso de tokens de cancelación. A medida que se ejecuta una tarea, debe verificar el estado del token para 
+                            determinar si se ha solicitado una cancelación. Esta es una diferencia importante entre una tarea y un hilo. Los hilos pueden ser abortados por otro proceso 
+                            en cualquier momento. Una tarea puede solicitar que se cancele otra tarea, pero esto solo dará como resultado que ese hilo finalice si el código de la tarea 
+                            está verificando el token de cancelación. Sin embargo, tenga en cuenta que esto no significa que una tarea activa nunca se pueda eliminar de la memoria, ya 
+                            que las tareas que se ejecutan en segundo plano se finalizan automáticamente al finalizar el proceso en primer plano que las creó.
+                        </li>
+                        <li>
+                            ■ Los métodos en un objeto deben ser seguros para subprocesos si se van a utilizar en aplicaciones que contienen múltiples tareas. El acceso a los miembros 
+                            de datos de la clase que contiene el método seguro para subprocesos debe administrarse de manera atómica. Los parámetros pasados ​​al método por referencia son 
+                            vulnerables a los cambios en los elementos del parámetro que pueden ocurrir mientras el método se está ejecutando.
+                        </li>
+                        <li>
+                            ■ Una construcción while es útil en situaciones en las que desea repetir algo siempre que una condición sea verdadera. Una construcción do-while es útil en 
+                            situaciones en las que desea hacer algo y luego repetirlo si la acción falla.
+                        </li>
+                        <li>
+                            ■ A para la construcción es una manera fácil de realizar acciones de inicialización, prueba y actualización en un bucle. A para la construcción con frecuencia 
+                            implica la gestión de un valor de contador, pero esta no es la única forma en que se puede utilizar esta construcción.
+                        </li>
+                        <li>
+                            ■ Se puede usar una construcción foreach para enumerar los elementos de una colección. La colección proporciona un método que proporcionará un enumerador que 
+                            luego se iterará por la construcción foreach. Los elementos de la colección se proporcionan como de solo lectura.
+                        </li>
+                        <li>
+                            ■ Las clases de colección .NET estándar no son seguras para subprocesos. Esto significa que si varias tareas intentan compartir datos usando una Lista, el 
+                            contenido de la lista se dañará. .NET Framework proporciona un conjunto de colecciones simultáneas que pueden ser compartidas por múltiples tareas activas. 
+                            La clase BlockingCollection proporciona un contenedor alrededor de las colecciones concurrentes ConcurrentStack, ConcurrentQueue y ConcurrentBag. Las tareas 
+                            que utilicen una BlockingCollection se bloquearán (pausarán) si no hay espacio para elementos adicionales o si intentan tomar elementos de una colección 
+                            vacía. Las colecciones simultáneas proporcionan versiones de "prueba" de métodos para extraer elementos que devuelven si una acción tuvo éxito o no. Esto se 
+                            debe a que en el tiempo transcurrido entre determinar que hay elementos disponibles y leerlos, es posible que otra tarea haya eliminado los elementos. La 
+                            clase ConcurrentDictionary proporciona métodos adicionales para la actualización condicional de elementos en el diccionario.
+                        </li>
+                        <li>
+                            ■ Las aplicaciones de subprocesos múltiples son vulnerables a las condiciones de carrera donde las acciones de una tarea en un elemento de datos compartidos 
+                            no se ejecutan hasta su finalización antes de que esa tarea sea reemplazada por otra.
+                        </li>
+                        <li>
+                            ■ Las condiciones de carrera se pueden abordar haciendo acciones atómicas, ya que siempre se completarán antes de que otra tarea pueda realizar la acción. 
+                            Esto se logra mediante el uso de objetos de bloqueo. Una tarea reclama el bloqueo y mientras lo tiene, otras tareas que intentan reclamar ese bloqueo e 
+                            ingresar el código atómico se bloquearán. Esto puede dar como resultado una cola de tareas bloqueadas que esperan que se libere un bloqueo en particular.
+                        </li>
+                        <li>
+                            ■ Se dice que dos tareas que esperan cerraduras entre sí están estancadas o en un abrazo mortal. Los puntos muertos pueden surgir como resultado de un código 
+                            que espera el acceso a un objeto de bloqueo dentro de una acción atómica. Esto debe abordarse con un buen diseño.
+                        </li>
+                        <li>
+                            ■ El mecanismo del monitor para el bloqueo se puede utilizar con preferencia a la palabra clave de bloqueo si una aplicación se beneficiaría de que las tareas
+                            puedan determinar si pueden tener acceso a una acción atómica o no, en lugar de bloquearse tan pronto como intenten adquirir el bloquear.
+                        </li>
+                        <li>
+                            ■ Las acciones simples, como la actualización de una variable en particular, se pueden lograr mediante el uso de operaciones entrelazadas, en lugar de crear 
+                            bloques de código atómicos.
+                        </li>
+                        <li>
+                            ■ Las variables que pueden ser utilizadas por múltiples procesos pueden marcarse como "volátiles". Esto le indica al compilador que no realice una 
+                            optimización como el almacenamiento en caché del valor de la variable en un registro del procesador o el cambio del orden de las instrucciones.
+                        </li>
+                        <li>
+                            ■ Las tareas pueden cancelarse mediante el uso de tokens de cancelación. A medida que se ejecuta una tarea, debe verificar el estado del token para determinar 
+                            si se ha solicitado una cancelación. Esta es una diferencia importante entre una tarea y un hilo. Los hilos pueden ser abortados por otro proceso en cualquier 
+                            momento. Una tarea puede solicitar que se cancele otra tarea, pero esto solo dará como resultado que ese hilo finalice si el código de la tarea está verificando el token de cancelación. Sin embargo, tenga en cuenta que esto no significa que una tarea activa nunca se pueda eliminar de la memoria, ya que las tareas que se ejecutan en segundo plano se finalizan automáticamente al finalizar el proceso en primer plano que las creó.
+                        </li>
+                        <li>
+                            ■ Los métodos en un objeto deben ser seguros para subprocesos si se van a utilizar en aplicaciones que contienen múltiples tareas. El acceso a los miembros de 
+                            datos de la clase que contiene el método seguro para subprocesos debe administrarse de manera atómica. Los parámetros pasados ​​al método por referencia son 
+                            vulnerables a los cambios en los elementos del parámetro que pueden ocurrir mientras el método se está ejecutando.
+                        </li>
+                        <li>
+                            ■ Una construcción while es útil en situaciones en las que desea repetir algo siempre que una condición sea verdadera. Una construcción do-while es útil en 
+                            situaciones en las que desea hacer algo y luego repetirlo si la acción falla.
+                        </li>
+                        <li>
+                            ■ A para la construcción es una manera fácil de realizar acciones de inicialización, prueba y actualización en un bucle. A para la construcción con frecuencia 
+                            implica la gestión de un valor de contador, pero esta no es la única forma en que se puede utilizar esta construcción.
+                        </li>
+                        <li>
+                            ■ Se puede usar una construcción foreach para enumerar los elementos de una colección. La colección proporciona un método que proporcionará un enumerador que 
+                            luego se iterará por la construcción foreach. Los elementos de la colección se proporcionan como de solo lectura.
+                        </li>
+                        <li>
+                            ■ La declaración de interrupción permite que un programa salga de un ciclo inmediatamente. Una gran cantidad de interrupciones en un bucle puede dificultar 
+                            discernir las circunstancias en las que salió el bucle. También se puede salir de un bucle al regresar del método en el que se está ejecutando y cuando el 
+                            código del bucle arroja una excepción que no queda atrapada en el bucle.
+                        </li>
+                        <li>
+                            ■ La instrucción continue permite que un programa regrese a la "parte superior" de un bucle y repita el bucle sin pasar por el código del bucle. Tenga en 
+                            cuenta que cualquier comportamiento de actualización y prueba se realizará cuando se ejecute una instrucción de continuación.
+                        </li>
+                        <li>
+                            ■ Una construcción if permite la ejecución condicional de una declaración o bloque de declaraciones. Si las construcciones están controladas por una expresión 
+                            lógica y pueden ser seguidas por una cláusula else que identifica la declaración que se realizará si la condición es falsa. Si las condiciones se pueden 
+                            anidar, una parte de otra de una construcción if siempre se une al if más "cercano".
+                        </li>
+                        <li>
+                            ■ Las expresiones lógicas se evalúan como verdaderas o falsas. Las variables se pueden comparar utilizando operadores relacionales y de igualdad. Los valores 
+                            lógicos se pueden combinar usando y, o y exclusivos u operadores. El operador y y el operador o tienen versiones de "cortocircuito" que solo se evalúan hasta
+                            el punto donde se puede determinar el valor del resultado de la expresión.
+                        </li>
+                        <li>
+                            ■ La construcción del interruptor permite la selección de un comportamiento dado del valor de un valor de control que puede ser un entero, una cadena o un 
+                            carácter. Se puede especificar un comportamiento predeterminado si el valor de control no coincide con ninguna de las selecciones.
+                        </li>
+                        <li>
+                            ■ Una expresión contiene operandos y operadores. Los operandos son valores literales o variables. Los operadores tienen prioridad y asociabilidad que 
+                            determinan el punto en que se aplica el operador durante la evaluación de la expresión.
+                        </li>
+                        <li>
+                            ■ Los programas C # pueden usar delegados para crear variables que pueden servir como referencias a métodos en objetos. Un objeto que desee recibir 
+                            notificaciones de un editor puede usar un delegado para especificar un método para que lo llame el editor del evento. Un solo delegado de editor realiza 
+                            llamadas a sus suscriptores, cada uno de los cuales ha proporcionado un delegado.
+                        </li>
+                        <li>
+                            ■ La palabra clave de evento permite que un delegado se use de manera segura y las clases EventArgs describen un patrón que se usa en .NET para permitir que 
+                            los eventos entreguen datos a un suscriptor.
+                        </li>
+                        <li>
+                            ■ Los delegados también pueden usarse como referencias a métodos individuales. Un delegado que hace referencia a un método puede considerarse como un dato que 
+                            describe una acción.
+                        </li>
+                        <li>
+                            ■ Una expresión lambda permite que una acción se exprese directamente y proporciona una forma abreviada conveniente al escribir código. El tipo de parámetros 
+                            y el valor devuelto por una expresión lambda se infieren del contexto de la llamada.
+                        </li>
+                        <li>
+                            ■ Un programa genera una excepción para indicar una situación en la que el programa no puede continuar su funcionamiento normal. La ejecución se transfiere 
+                            de las declaraciones que se ejecutan en un bloque de código try a un controlador de excepciones en un bloque catch, que se escribió para tratar con la 
+                            excepción. Una excepción que se genera en el código que no está dentro de una construcción de prueba hará que el subproceso en ejecución finalice.
+                        </li>
+                        <li>
+                            ■ Un último elemento se puede utilizar en una construcción de prueba para especificar el código que siempre se ejecutará.
+                        </li>
+                        <li>
+                            ■ Un programa genera una excepción al crear una nueva instancia de excepción y luego utiliza la palabra clave throw para generarla. Todos los objetos de
+                            excepción se derivan de la clase Excepción. Hay una gran cantidad de tipos de excepción que se usan en las bibliotecas .NET para describir condiciones de 
+                            error; un programador también puede crear sus propios tipos de excepción que contienen su propia información específica de error.
+                        </li>
+                        <li>
+                            ■ Un objeto de excepción contiene información que describe el error, incluida una "traza de pila" que indica el punto en el origen del programa donde se 
+                            produce la excepción. Una excepción también puede contener una referencia de excepción interna para que una nueva excepción se pueda envolver alrededor de una 
+                            que se ha detectado, antes de pasar la excepción a otra capa de administración de excepciones.
+                        </li>
+                    </ul>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>

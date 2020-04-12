@@ -1,0 +1,40 @@
+﻿
+@{
+    ViewData["Title"] = "Index";
+    Layout = "_Layout";
+}
+
+<div class="row">
+    <div class="col">
+        <div class="card" style="margin: 20px;">
+            <div class="card-body">
+                <h5 class="card-title">Capitulo 1: Controlando el flujo de un programa</h5>
+                <h6 class="card-subtitle mb-2 text-muted">Tema 4: Crear e implementar eventos y callbacks</h6>
+                <hr>
+                <p class="card-text">
+                     <h5>Uso de eventos</h5>
+                    <ul>
+                        <li>
+                            El objeto de alarma que hemos creado no es particularmente seguro. El delegado OnAlarmRaised se ha hecho público para que
+                            los suscriptores puedan conectarse a él. Sin embargo, esto significa que el código externo al objeto de alarma puede activar la alarma
+                            llamando directamente al delegado OnAlarmRaised. El código externo puede sobrescribir el valor de OnAlarmRaised, lo que puede eliminar a
+                            los suscriptores.
+                        </li>
+                        <li>
+                            C# proporciona una construcción de evento que permite que un delegado se especifique como un evento. Esto se muestra en el Listado 1-67.
+                            El evento de palabra clave se agrega antes de la definición del delegado. El miembro OnAlarmRaised ahora se crea como un campo de datos en
+                            la clase Alarma, en lugar de una propiedad. OnAlarmRaised ya no tiene comportamientos get o set. Sin embargo, ahora no es posible que el
+                            código externo a la clase Alarm asigne valores a OnAlarmRaised, y el delegado OnAlarmRaised solo se puede llamar desde la clase donde se
+                            declara. En otras palabras, agregar la palabra clave del evento convierte a un delegado en un evento adecuadamente útil.
+                        </li>
+                        <li>
+                            El código en el Listado 1-67 anterior tiene otra mejora sobre las versiones anteriores. Crea una instancia de delegado y la asigna cuando
+                            se crea OnAlarmRaised, por lo que ahora no es necesario verificar si el delegado tiene o no un valor antes de llamarlo. Esto simplifica el
+                            método RaiseAlarm.
+                        </li>
+                    </ul>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>

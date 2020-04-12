@@ -1,0 +1,102 @@
+﻿
+@{
+    ViewData["Title"] = "Index";
+    Layout = "_Layout";
+}
+
+<div class="row">
+    <div class="col">
+        <div class="card" style="margin: 20px;">
+            <div class="card-body">
+                <h5 class="card-title">Capitulo 1: Controlando el flujo de un programa</h5>
+                <h6 class="card-subtitle mb-2 text-muted">Tema 4: Crear e implementar eventos y callbacks</h6>
+                <hr>
+                <p class="card-text">
+                    <h5>Crear eventos con tipos de delegados integrados</h5>
+                    <ul>
+                        <li>
+                            Los delegados de eventos creados hasta ahora han utilizado la clase Action como el tipo de cada evento. Esto funcionará, pero los programas
+                            que usan eventos deben usar la clase EventHandler en lugar de Action. Esto se debe a que la clase EventHandler es la parte de .NET diseñada
+                            para permitir que los suscriptores reciban datos sobre un evento. EventHandler se usa en todo .NET Framework para administrar eventos. Un
+                            EventHandler puede entregar datos, o simplemente puede indicar que se ha producido un evento. El Listado 1-68 muestra cómo la clase Alarm
+                            puede usar un EventHandler para indicar que se ha activado una alarma.
+                        </li>
+                        <li>
+                            El delegado EventHandler se refiere a un método de suscriptor que aceptará dos argumentos. El primer argumento es una referencia al objeto
+                            que genera el evento. El segundo argumento es una referencia a un objeto de tipo EventArgs que proporciona información sobre el evento.
+                            En el Listado 1-68, el segundo argumento se establece en EventArgs.Empty, para indicar que este evento no produce ningún dato, es
+                            simplemente una notificación de que se ha producido un evento.
+                        </li>
+                        <li>
+                            La firma de los métodos que se agregarán a este delegado debe reflejar esto. El método AlarmListener1 acepta dos parámetros y puede usarse
+                            con este delegado.
+                        </li>
+                    </ul>
+                    <h5>Use EventArgs para entregar información del evento</h5>
+                    <ul>
+                        <li>
+                            La clase de alarma creada en el Listado 1-68 permite que un suscriptor reciba una notificación de que se ha activado una alarma, pero no
+                            proporciona al suscriptor ninguna descripción de la alarma. Es útil si los suscriptores pueden recibir información sobre la alarma. Quizás
+                            una cadena que describa la ubicación de la alarma sería útil.
+                        </li>
+                        <li>
+                            Puede hacer esto creando una clase que pueda entregar esta información y luego usar un EventHandler para entregarla. El Listado 1-69
+                            muestra la clase AlarmEventArgs, que es una subclase de la clase EventArgs, y le agrega una propiedad Location. Si se requiere más
+                            información del evento, tal vez la fecha y la hora de la alarma, se pueden agregar a la clase AlarmEventArgs.
+                        </li>
+                        <li>
+                            Ahora tiene su propio tipo que puede usarse para describir un evento que ha ocurrido. El evento es la alarma que se genera y el tipo que ha
+                            creado se llama AlarmEventAgs. Cuando se activa la alarma, queremos que el controlador del evento de alarma acepte objetos AlarmEventArgs
+                            para que el controlador pueda recibir detalles del evento.
+                        </li>
+                        <li>
+                            Se declara que el delegado EventHandler para el evento OnAlarmRaised entrega argumentos del tipo AlarmEventArgs. Cuando la alarma se activa
+                            mediante el método RaiseAlarm, el evento recibe una referencia a la alarma y una instancia recién creada de AlarmEventArgs que describe el
+                            evento de alarma.
+                        </li>
+                        <li>
+                            Los suscriptores del evento aceptan AlarmEventArgs y pueden usar los datos que contiene. El método AlarmListener1 a continuación muestra
+                            la ubicación de la alarma que obtiene de su argumento.
+                        </li>
+                        <li>
+                            Tenga en cuenta que se pasa una referencia al mismo objeto AlarmEventArgs a cada uno de los suscriptores al evento OnAlarmRaised. Esto
+                            significa que si uno de los suscriptores modifica el contenido de la descripción del evento, los subscriptores posteriores verán el evento
+                            modificado. Esto puede ser útil si los suscriptores necesitan indicar que se ha tratado un evento determinado, pero también puede ser una
+                            fuente de efectos secundarios no deseados.
+                        </li>
+                    </ul>
+                    <h5>Excepciones en suscriptores de eventos</h5>
+                    <ul>
+                        <li>
+                            Ahora sabes cómo funcionan los eventos. Varios programas pueden suscribirse a un evento. Lo hacen vinculando a un delegado al evento.
+                            El delegado sirve como referencia a un fragmento de código C # que el suscriptor desea ejecutar cuando se produce el evento. Este fragmento
+                            de código se denomina controlador de eventos.
+                        </li>
+                        <li>
+                            En nuestros programas de ejemplo, el evento es una alarma que se activa. Cuando se activa la alarma, el evento llamará a todos los
+                            controladores de eventos que se hayan suscrito al evento de alarma. Pero, ¿qué sucede si uno de los controladores de eventos falla al
+                            lanzar una excepción? Si el código en uno de los suscriptores arroja una excepción no detectada, el proceso de manejo de excepciones
+                            finaliza en ese punto y no se notificará a más suscriptores. Esto significaría que algunos suscriptores no serían informados del evento.
+                        </li>
+                        <li>
+                            Para resolver este problema, se puede llamar a cada controlador de eventos individualmente y luego se puede crear una única excepción
+                            agregada que contiene todos los detalles de las excepciones lanzadas por los controladores de eventos. El Listado 1-70 muestra cómo se
+                            hace esto. El método GetInvocationList se usa en el delegado para obtener una lista de suscriptores al evento. Esta lista se repite y se
+                            llama al método DynamicInvoke para cada suscriptor. Cualquier excepción lanzada por los suscriptores se captura y se agrega a una lista de
+                            excepciones. Tenga en cuenta que la excepción lanzada por el suscriptor es entregada por una excepción TypeInvocationException, y es la
+                            excepción interna de esta que debe guardarse.
+                        </li>
+                        <li>
+                            Estos pueden ser capturados y tratados cuando se produce el evento. El siguiente código activa la alarma en la ubicación de la cocina,
+                            detecta las excepciones que los suscriptores lanzan al evento de alarma y luego imprime la descripción de la excepción.
+                        </li>
+                        <li>
+                            Cuando se ejecuta este programa de ejemplo, genera lo siguiente. Tenga en cuenta que las excepciones se enumeran después de que se hayan
+                            completado los métodos de suscriptor.
+                        </li>
+                    </ul>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>

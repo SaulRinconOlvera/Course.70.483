@@ -1,0 +1,131 @@
+﻿
+@{
+    ViewData["Title"] = "Index";
+    Layout = "_Layout";
+}
+
+<div class="row">
+    <div class="col">
+        <div class="card" style="margin: 20px;">
+            <div class="card-body">
+                <h5 class="card-title">Capitulo 1: Controlando el flujo de un programa</h5>
+                <h6 class="card-subtitle mb-2 text-muted">Tema 2: Manejar y administrar multihilos</h6>
+                <hr>
+                <p class="card-text">
+                    <h5>Implementación de bloqueos</h5>
+                    <ul>
+                        <li>
+                            Al examinar la colección ConcurrentDictionary descubrimos que las acciones en un diccionario que pueden ser utilizadas por múltiples procesos se denominan atómicas. Esto significa que una acción de un proceso en una entrada de diccionario dada no puede ser interrumpida por otro proceso. La corrupción de datos que vio en el Listado 1-41 es causada por el hecho de que agregar uno a una variable no es una acción atómica. Se puede interrumpir, lo que lleva a tareas de "lucha" por un solo valor.
+                        </li>
+                    </ul>
+                    <h6>Bloqueos</h6>
+                    <ul>
+                        <li>
+                            Un programa puede usar el bloqueo para garantizar que una acción determinada sea atómica. Las acciones atómicas se realizan hasta su finalización, por lo que no se pueden interrumpir. El acceso a una acción atómica está controlado por un objeto de bloqueo, que puede considerarse como las llaves de un baño operado por un restaurante.
+                            Para tener acceso al baño, le pide la llave al cajero. Luego puede ir y usar el baño y, cuando haya terminado, devolver la llave al cajero. Si el baño está en uso cuando solicita la llave, debe esperar hasta que la persona frente a usted le devuelva la llave, para que luego pueda ir y usarla.
+                        </li>
+                        <li>
+                            El Listado 1-43 muestra cómo crear un objeto de bloqueo que funcione de la misma manera que la llave del baño. El objeto se llama sharedTotalLock y controla el acceso a la declaración que actualiza el valor de sharedTotal. La declaración de bloqueo es seguida por una declaración o bloque de código que se realiza de manera atómica, por lo que no será posible que una tarea interrumpa el código protegido por el bloqueo. Si ejecuta el programa ahora, encontrará que se imprime el valor correcto.
+                        </li>
+                        <li>
+                            En este punto, puede estar contento de saber cómo crear programas multiproceso y usar bloqueos para evitar que interactúen de manera peligrosa, pero tengo algunas malas noticias para usted. Si bien ha impedido que las tareas interactúen de manera peligrosa, también ha eliminado cualquier beneficio del uso de la multitarea. Si ejecuta el programa en el Listado 1-43, descubrirá que lleva más tiempo sumar los elementos en las matrices que las versiones anteriores.
+                        </li>
+                        <li>
+                            Esto se debe a que las tareas ya no se ejecutan en paralelo. La mayoría de las veces las tareas están en una cola esperando el acceso al valor total compartido. Agregar un candado resolvió el problema de contención, pero también ha impedido que las tareas se ejecuten en paralelo, ya que están esperando el acceso a una variable que todos necesitan usar.
+                        </li>
+                        <li>
+                            La solución a este problema es simple. El Listado 1-44 muestra una versión de addRangeOfValues, que calcula un subtotal en el bucle y trabaja la matriz sumando elementos de la matriz. El subtotal se agrega al valor total una vez que este ciclo se ha completado. En lugar de actualizar el total compartido cada vez que agrega un nuevo elemento de la matriz; Esta versión del método solo actualiza el total compartido una vez. Así que ahora hay una milésima parte del uso de las variables compartidas, y el programa ahora funciona mucho mejor.
+                        </li>
+                        <li>
+                            Cuando crea una versión paralela de una operación, debe tener en cuenta la posible corrupción del valor cuando utiliza variables compartidas, y también debe considerar cuidadosamente el impacto de cualquier bloqueo que utilice para evitar la corrupción. También debe recordar que cuando una tarea ejecuta código protegido por un bloqueo, la tarea está en posición de bloquear otras tareas.
+                            Esto es similar a cómo una persona que pasa mucho tiempo en el baño causará una larga cola de personas esperando para usarlo. El código en un candado debe ser lo más breve posible y no debe contener ninguna acción que pueda tardar un tiempo en completarse. Como ejemplo, su programa nunca debe realizar entradas/salidas durante un bloque de código bloqueado.
+                        </li>
+                    </ul>
+                    <h6>Monitores</h6>
+                    <ul>
+                        <li>
+                            Un monitor proporciona un conjunto de acciones similar a un bloqueo, pero el código está organizado de manera ligeramente diferente. Permiten que un programa garantice que solo un hilo a la vez pueda acceder a un objeto en particular. En lugar de controlar una declaración o bloque de código, como lo hace la palabra clave de bloqueo, el código atómico está encerrado en las llamadas de Monitor.Enter y Monitor.Exit. Los métodos Enter y Exit pasan una referencia a un objeto que se usa como bloqueo. En el Listado 1-45, el objeto de bloqueo es sharedTotalLock. Si ejecuta el programa, verá que se comporta exactamente de la misma manera que el que se muestra en el Listado 1-43.
+                        </li>
+                        <li>
+                            Si el código atómico arroja una excepción, debe asegurarse de que se liberen todos los bloqueos que se han reclamado para ingresar el código. En las declaraciones administradas por la palabra clave de bloqueo, esto sucede automáticamente, si usa un monitor, asegúrese de que se libere el bloqueo.
+                        </li>
+                        <li>
+                            En el caso del Monitor utilizado en el método addRangeOfValues ​​en el Listado 1-45, no hay posibilidad de que el código atómico (la declaración que actualiza el valor de sharedTotal) arroje una excepción. Sin embargo, si se produce una excepción, es importante asegurarse de que se realiza Monitor.Exit, de lo contrario, esto impide que cualquier otra tarea acceda al código.
+                        </li>
+                        <li>
+                            Asegúrese de que el método Monitor.Exit siempre se realiza encerrando el código atómico en un bloque de prueba, y que llame a Monitor.Exit en la cláusula final, que siempre se ejecutará:
+                        </li>
+                        <li>
+                            Tenga en cuenta que si una acción atómica arroja una excepción, indica que algo ha fallado en su aplicación. En tal situación, considere diseñar cosas para que la aplicación informe el error y luego finalice de la manera más ordenada posible. Es posible que la acción atómica que arrojó una excepción arroje otra, con el potencial de una mayor corrupción de datos a medida que la aplicación cojea.
+                        </li>
+                        <li>
+                            En este punto, es posible que se pregunte por qué es posible que desee utilizar monitores en lugar de bloqueos.
+                            Un programa que usa la palabra clave de bloqueo no tiene forma de verificar si se bloqueará o no cuando intente ingresar el segmento de código bloqueado. Sin embargo, si se usa un monitor, el programa puede hacer lo siguiente
+                        </li>
+                        <li>
+                            El método TryEnter intenta ingresar el código controlado por el bloqueo. Si esto no es posible porque el objeto de bloqueo está en uso, el método TryEnter devuelve falso. También hay versiones de TryEnter que pueden establecer atómicamente una variable de indicador para indicar si se obtuvo o no el bloqueo, junto con una variable que esperará el bloqueo durante un número determinado de milisegundos antes de darse por vencido. Estas características agregan flexibilidad adicional al diseño de tareas.
+                        </li>
+                    </ul>
+                    <h6>Puntos muertos en código de subprocesos múltiples (<code>DeadLocks</code>)</h6>
+                    <ul>
+                        <li>
+                            Al observar el uso de BlockingCollection en "Implementar multiproceso", consideramos el problema planteado por un abrazo mortal, donde dos tareas diferentes se esperan para realizar una acción en una colección compartida, que bloquea agregar elementos cuando la colección está llena y eliminar elementos cuando la colección está vacía. Esta situación también se llama un punto muerto. La aplicación en el Listado 1-46 contiene dos métodos y dos objetos de bloqueo. Los métodos usan los objetos de bloqueo en un orden diferente para que cada tarea obtenga un objeto de bloqueo cada uno, y luego espera a que el otro objeto de bloqueo se libere. Cuando se ejecuta el programa, los dos métodos se llaman uno tras otro.
+                        </li>
+                        <li>
+                            El programa se ejecuta hasta su finalización. Cada método obtiene los objetos de bloqueo a su vez porque se ejecutan secuencialmente. Puede cambiar el programa para que los métodos sean realizados por tareas. El Listado 1-47 muestra un método principal que crea dos tareas que ejecutarán los métodos simultáneamente.
+                        </li>
+                        <li>
+                            Las tareas en este caso nunca se completan. Cada tarea está esperando el objeto de bloqueo del otro, y ninguno puede continuar. Tenga en cuenta que esto no es lo mismo que crear un ciclo infinito, en el que un programa repite una secuencia de declaraciones para siempre. No encontrará que el error del programa en el Listado 1-47 usará toda la CPU de la misma manera que lo hará un bucle infinitamente repetido. En cambio, estas dos tareas se quedarán en la memoria sin poder hacer nada.
+                        </li>
+                        <li>
+                            Escribir el ejemplo en el Listado 1-47 fue difícil para mí. Cuando uso objetos de sincronización, me aseguro de nunca "anidar" un uso de un candado dentro de otro.
+                        </li>
+                    </ul>
+                    <h6>El objeto <code>lock</code></h6>
+                    <ul>
+                        <li>
+                            Un uso incorrecto de la declaración de bloqueo puede introducir puntos muertos en sus aplicaciones. Cualquier objeto administrado por referencia se puede usar como un objeto de bloqueo, que representa "la clave de nuestro baño". El alcance del objeto debe limitarse a la parte de su aplicación que contiene las tareas de cooperación; recuerde que el acceso a un objeto de bloqueo proporciona un medio por el cual otro código puede bloquear sus tareas.
+                        </li>
+                        <li>
+                            Es importante considerar cuidadosamente el objeto que se utilizará como cerradura. Puede ser tentador usar un objeto de datos o la referencia a "esto" en un método como bloqueo, pero esto es confuso. Recomiendo una política de creación explícita de un objeto para ser utilizado como un bloqueo.
+                        </li>
+                        <li>
+                            No es una buena idea usar una cadena como objeto de bloqueo, porque la implementación de la cadena .NET usa un grupo de cadenas durante la compilación. Cada vez que un programa asigna texto a una cadena, el grupo se verifica para ver si una cadena ya contiene ese texto. Si el texto ya está en el grupo de cadenas, el programa usa una referencia a él. En otras palabras, la cadena "the" solo se almacenaría una vez cuando se ejecuta una aplicación. Si dos tareas usan la misma palabra como su objeto de bloqueo, están compartiendo ese bloqueo, lo que genera problemas.
+                        </li>
+                    </ul>
+
+                    <h6>Operaciones entrelazadas</h6>
+                    <ul>
+                        <li>
+                            Usted vio que cuando usamos múltiples tareas para sumar el contenido de una matriz, debe proteger el acceso al total compartido por medio de un bloqueo. Hay una mejor manera de lograr un acceso seguro para subprocesos al contenido de una variable, que es usar la clase Interlocked. Esto proporciona un conjunto de operaciones seguras para subprocesos que se pueden realizar en una variable. Estos incluyen aumentar, disminuir, intercambiar (intercambiar una variable con otra) y agregar.
+                        </li>
+                        <li>
+                            El Listado 1-48 muestra cómo un programa puede usar una versión entrelazada de Agregar para actualizar el total compartido con un valor calculado por addRangeOfValues ​​en el programa de suma de matrices.
+                        </li>
+                        <li>
+                            También hay un método de comparación e intercambio que puede usarse para crear un programa multitarea para buscar en una matriz y encontrar el valor más grande en esa matriz.
+                        </li>
+                    </ul>
+
+                    <h6>Variables volátiles</h6>
+                    <ul>
+                        <li>
+                            La fuente de un programa de C# pasa por varias etapas antes de que se ejecute realmente. El proceso de compilación incluye el examen de la secuencia de declaraciones para descubrir formas en que un programa puede ejecutarse más rápidamente. Esto podría provocar que las declaraciones se ejecuten en un orden diferente al orden en que se escribieron. Considere la siguiente secuencia de declaraciones.
+                        </li>
+                        <li>
+                            La primera instrucción asigna un valor a la variable x, la segunda hace algo de trabajo en la variable y, y la tercera declaración imprime el valor en la variable x. Después de la compilación, podemos encontrar que se ha intercambiado el orden de las dos primeras declaraciones, de modo que el valor en x puede mantenerse dentro del procesador de la computadora en lugar de tener que volver a cargarse desde la memoria para la declaración de escritura.
+                        </li>
+                        <li>
+                            En una situación de subproceso único, esto es perfectamente aceptable, pero si hay varios subprocesos trabajando en el código, esto puede provocar comportamientos inesperados. Además, si otra tarea cambia el valor de x mientras se ejecutan las declaraciones, y si el compilador de C # almacena en caché el valor de x entre las declaraciones, se imprime un valor desactualizado. C # proporciona la palabra clave volátil, que puede usarse para indicar que las operaciones que involucran una variable particular no están optimizadas de esta manera.
+                        </li>
+                        <br />
+                        <pre>volátil int x; </pre>
+                        <li>
+                            Las operaciones que involucran la variable x ahora no se optimizarán, y el valor de x se obtendrá de la copia en la memoria, en lugar de almacenarse en caché en el procesador. Esto puede hacer que las operaciones que involucran la variable x sean mucho menos eficientes.
+                        </li>
+                    </ul>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
