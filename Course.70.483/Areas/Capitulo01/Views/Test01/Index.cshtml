@@ -1,0 +1,531 @@
+﻿
+@{
+    ViewData["Title"] = "Index";
+    Layout = "_Layout";
+}
+
+<div class="row">
+    <div class="col">
+        <div class="card" style="margin: 20px;">
+            <div class="card-body">
+                <h5 class="card-title">Capitulo 1: Controlando el flujo de un programa</h5>
+                <h6 class="card-subtitle mb-2 text-muted">Tema 5: Implementar el manejo de exepciones</h6>
+                <hr>
+                <p class="card-text">
+                    <h5>Test de conocimiento</h5>
+                    <ul>
+                        <li>
+                            En estos experimentos mentales, demuestre sus habilidades y conocimiento de los temas tratados en este capítulo. Puede encontrar las respuestas a estos
+                            experimentos mentales en la siguiente sección.
+                        </li>
+                    </ul>
+                    <h6>Uso de múltiples tareas</h6>
+                    <ul>
+                        <li>
+                            En la etapa de diseño de una aplicación, tendrá que decidir si / cómo usar tareas e hilos. Aquí hay algunas preguntas que le gustaría tener en cuenta:
+                        </li>
+                        <li>
+                            Aquí hay algunas preguntas que le gustaría considerar:
+                        </li>
+
+                        <div id="accordion">
+                            <div class="card">
+                                <div class="card-header" id="heading1">
+                                    <h5 class="mb-0">
+                                        <button class="btn collapsed text-left " data-toggle="collapse" data-target="#collapse1" aria-expanded="false" aria-controls="collapse1">
+                                            Dadas las dificultades en la sincronización y administración, <b>¿vale la pena el esfuerzo para implementar aplicaciones usando múltiples tareas?</b>
+                                        </button>
+                                    </h5>
+                                </div>
+                                <div id="collapse1" class="collapse" aria-labelledby="heading1" data-parent="#accordion">
+                                    <div class="card-body">
+                                        Dividir una aplicación en tareas separadas no es solo algo que haría para aprovechar las ventajas de rendimiento. Las tareas proporcionan un nivel de abstracción muy útil.
+                                        Una vez que se ha diseñado la comunicación entre las tareas, se puede trabajar en cada una de forma independiente. Particionar una aplicación en tareas puede verse como una
+                                        extensión natural del diseño basado en componentes.
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card">
+                                <div class="card-header" id="heading2">
+                                    <h5 class="mb-0">
+                                        <button class="btn collapsed text-left " data-toggle="collapse" data-target="#collapse2" aria-expanded="false" aria-controls="collapse2">
+                                            <b>¿Aún vale la pena el esfuerzo de usar tareas múltiples si solo tiene un procesador en su computadora?</b>
+                                        </button>
+                                    </h5>
+                                </div>
+                                <div id="collapse2" class="collapse" aria-labelledby="heading2" data-parent="#accordion">
+                                    <div class="card-body">
+                                        Considere un programa que realiza un análisis numérico de un conjunto de datos en particular. Una vez que los datos se han cargado en la memoria, el tiempo que tarda en
+                                        procesarse está determinado por la velocidad de la CPU. Diríamos que este programa estaba vinculado a la CPU.
+                                        <br />
+                                        <br />
+                                        Si un sistema solo tiene un procesador, la conversión del programa para usar una
+                                        implementación de subprocesos múltiples no mejoraría la velocidad a la que se procesan los datos. Sin embargo, considere un programa que
+                                        interactúa continuamente con el sistema de archivos. Diríamos que esta aplicación estaba vinculada a IO (entrada/salida), ya que la velocidad a la
+                                        que puede funcionar está determinada  por el rendimiento del sistema de archivos.
+                                        <br />
+                                        <br />
+                                        Cuando un programa vinculado a IO está activo, con frecuencia no podrá realizar ningún trabajo mientras espera que se completen las transacciones
+                                        de archivos. Una solución de subprocesos múltiples podría realizar el procesamiento en los momentos en que una tarea estaba esperando que se
+                                        completara una operación de entrada/salida.
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card">
+                                <div class="card-header" id="heading3">
+                                    <h5 class="mb-0">
+                                        <button class="btn collapsed text-left " data-toggle="collapse" data-target="#collapse3" aria-expanded="false" aria-controls="collapse3">
+                                            <b>¿Qué tipo de aplicaciones se benefician más del uso de aplicaciones multitarea?</b>
+                                        </button>
+                                    </h5>
+                                </div>
+                                <div id="collapse3" class="collapse" aria-labelledby="heading3" data-parent="#accordion">
+                                    <div class="card-body">
+                                        Una aplicación vinculada a la CPU se beneficiará de un enfoque multitarea si el sistema host tiene más de una CPU. Tenga en cuenta que el
+                                        programador puede tener que dedicar un poco de esfuerzo a reelaborar la aplicación para permitirle realizar múltiples tareas.
+                                        <br />
+                                        <br />
+                                        Una aplicación que
+                                        contiene una combinación de tareas vinculadas a la CPU y a la IO puede beneficiarse más de un enfoque de subprocesos múltiples, ya que siempre
+                                        habrá algo que el procesador pueda hacer.
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card">
+                                <div class="card-header" id="heading4">
+                                    <h5 class="mb-0">
+                                        <button class="btn collapsed text-left " data-toggle="collapse" data-target="#collapse4" aria-expanded="false" aria-controls="collapse4">
+                                            <b>¿Hay situaciones en las que realmente no deberías usar la multitarea?</b>
+                                        </button>
+                                    </h5>
+                                </div>
+                                <div id="collapse4" class="collapse" aria-labelledby="heading4" data-parent="#accordion">
+                                    <div class="card-body">
+                                        La naturaleza asincrónica de una aplicación multiproceso hace que sea muy difícil garantizar que una operación dada se completará dentro de un
+                                        tiempo específico. Los hilos pueden tener niveles de prioridad, pero estos no son duros y rápidos. Las aplicaciones con requisitos críticos de
+                                        tiempo no deben implementarse utilizando múltiples subprocesos.
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card">
+                                <div class="card-header" id="heading5">
+                                    <h5 class="mb-0">
+                                        <button class="btn collapsed text-left " data-toggle="collapse" data-target="#collapse5" aria-expanded="false" aria-controls="collapse5">
+                                            Necesito un proceso en segundo plano que comprima una gran cantidad de archivos de datos. <b>¿Debo usar una tarea o un hilo?</b>
+                                        </button>
+                                    </h5>
+                                </div>
+                                <div id="collapse5" class="collapse" aria-labelledby="heading5" data-parent="#accordion">
+                                    <div class="card-body">
+                                        Al elegir entre tareas e hilos, debe considerar lo que desea lograr. Las tareas son buenas para los procesos en segundo plano. Los subprocesos se
+                                        pueden usar para procesos en segundo plano, pero también se pueden ejecutar como procesos en primer plano. Las tareas son más fáciles de crear. En
+                                        esta situación, una tarea tendría más sentido, porque sería más fácil de crear y nunca necesitará operar en primer plano.
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card">
+                                <div class="card-header" id="heading6">
+                                    <h5 class="mb-0">
+                                        <button class="btn collapsed text-left " data-toggle="collapse" data-target="#collapse6" aria-expanded="false" aria-controls="collapse6">
+                                            <b>¿Cuál es la diferencia entre el método WaitAll y WaitAny cuando se espera que se complete una gran cantidad de tareas?</b>
+                                        </button>
+                                    </h5>
+                                </div>
+                                <div id="collapse6" class="collapse" aria-labelledby="heading6" data-parent="#accordion">
+                                    <div class="card-body">
+                                        El método WaitAll regresará cuando se hayan completado todas las tareas que se están ejecutando.
+                                        <br />
+                                        El método WaitAny volverá cuando se complete la primera de las tareas en ejecución.
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card">
+                                <div class="card-header" id="heading7">
+                                    <h5 class="mb-0">
+                                        <button class="btn collapsed text-left " data-toggle="collapse" data-target="#collapse7" aria-expanded="false" aria-controls="collapse7">
+                                            <b>¿Cuál es la diferencia entre una tarea de continuación y una tarea secundaria?</b>
+                                        </button>
+                                    </h5>
+                                </div>
+                                <div id="collapse7" class="collapse" aria-labelledby="heading7" data-parent="#accordion">
+                                    <div class="card-body">
+                                        Una tarea de continuación es una tarea que se inicia cuando se completa una tarea existente.
+                                        <br />
+                                        Una tarea secundaria es creada por una tarea principal y se ejecuta independientemente de la principal.
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card">
+                                <div class="card-header" id="heading8">
+                                    <h5 class="mb-0">
+                                        <button class="btn collapsed text-left " data-toggle="collapse" data-target="#collapse8" aria-expanded="false" aria-controls="collapse8">
+                                            <b>¿Cuál es la diferencia entre los métodos WaitAll y WhenAll?</b>
+                                        </button>
+                                    </h5>
+                                </div>
+                                <div id="collapse8" class="collapse" aria-labelledby="heading8" data-parent="#accordion">
+                                    <div class="card-body">
+                                        El método WaitAll acepta una lista de referencias de tareas como argumento y regresa cuando todas las tareas se han completado.
+                                        <br />
+                                        El método WhenAll se puede esperar, lo que permite su uso en código asincrónico.
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card">
+                                <div class="card-header" id="heading9">
+                                    <h5 class="mb-0">
+                                        <button class="btn collapsed text-left " data-toggle="collapse" data-target="#collapse9" aria-expanded="false" aria-controls="collapse9">
+                                            <b>¿Qué sucede cuando se espera una llamada al método?</b>
+                                        </button>
+                                    </h5>
+                                </div>
+                                <div id="collapse9" class="collapse" aria-labelledby="heading9" data-parent="#accordion">
+                                    <div class="card-body">
+                                        Los métodos que se pueden esperar devuelven una referencia a una tarea. Cuando un programa realiza una espera en un método asincrónico, el método
+                                        asincrónico regresa inmediatamente. Cuando la tarea devuelta por el método esperado se complete, se completará el resto del método asincrónico.
+                                        <br />
+                                        <br />
+                                        Un buen ejemplo de una situación en la que esto puede usarse con buenos resultados es en las interfaces de usuario. Un método de interfaz de
+                                        usuario, por ejemplo, el código que implementa un comportamiento cuando se hace clic en un botón en la interfaz de usuario, debe regresar lo más
+                                        rápido posible. De lo contrario, la interfaz de usuario dejará de responder. Al usar esperar, el controlador de clic de botón puede completarse y
+                                        regresar, mientras que la acción iniciada por el clic de botón se ejecuta en paralelo.
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card">
+                                <div class="card-header" id="heading10">
+                                    <h5 class="mb-0">
+                                        <button class="btn collapsed text-left " data-toggle="collapse" data-target="#collapse10" aria-expanded="false" aria-controls="collapse10">
+                                            <b>¿Qué tiene de especial una colección concurrente?</b>
+                                        </button>
+                                    </h5>
+                                </div>
+                                <div id="collapse10" class="collapse" aria-labelledby="heading10" data-parent="#accordion">
+                                    <div class="card-body">
+                                        Una colección concurrente es aquella que tiene comportamientos que pueden ser utilizados por múltiples procesos al mismo tiempo. Algunas colecciones
+                                        concurrentes, por ejemplo, ConcurrentDictionary, tienen comportamientos adicionales que permiten que los procesos solo realicen actualizaciones a los datos
+                                        almacenados en la colección cuando es válido hacerlo.
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                        <br />
+                    </ul>
+                    <h6>Administración de subprocesos múltiples</h6>
+                    <ul>
+                        <li>
+                            Las aplicaciones de subprocesos múltiples deberán considerar especialmente la forma en que se procesan los datos y el orden de las operaciones.
+                            También deberán contener disposiciones para la gestión de procesos.
+                        </li>
+                        <li>
+                            Aquí hay algunas preguntas que le gustaría considerar:
+                        </li>
+
+
+                        <div id="accordion">
+                            <div class="card">
+                                <div class="card-header" id="heading11">
+                                    <h5 class="mb-0">
+                                        <button class="btn collapsed text-left " data-toggle="collapse" data-target="#collapse11" aria-expanded="false" aria-controls="collapse11">
+                                            <b>¿Los errores de programa causados ​​por una implementación de subprocesos múltiples siempre se manifestarán como fallas en una aplicación?</b>
+                                        </button>
+                                    </h5>
+                                </div>
+                                <div id="collapse11" class="collapse" aria-labelledby="heading11" data-parent="#accordion">
+                                    <div class="card-body">
+                                        No hay garantía de que surjan las condiciones que podrían causar que una condición de carrera cause un problema. Los retrasos naturales en un sistema
+                                        pueden significar que los eventos ocurren en un orden que significa que las condiciones de carrera no causan ningún problema. Por ejemplo, si una tarea
+                                        está escribiendo un archivo en un disco, existe una buena probabilidad de que esta tarea tarde más en completarse que otra que está actualizando la pantalla.
+                                        Sin embargo, los problemas pueden aparecer repentinamente cuando el usuario compra una unidad de disco más rápida o instala más memoria. Esto podría acelerar
+                                        la acción de escritura y hacer que la aplicación se vuelva inestable. De hecho, estos síntomas son la mejor manera de diagnosticar problemas como este.
+                                        La primera pregunta que debe hacerle a un usuario cuyo programa se ha vuelto repentinamente poco confiable es "¿Ha realizado algún cambio en el sistema
+                                        subyacente?"
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card">
+                                <div class="card-header" id="heading12">
+                                    <h5 class="mb-0">
+                                        <button class="btn collapsed text-left " data-toggle="collapse" data-target="#collapse12" aria-expanded="false" aria-controls="collapse12">
+                                            <b>¿El hecho de que el procesador esté repentinamente al 100% de carga indica que dos procesos están atrapados en un abrazo mortal?</b>
+                                        </button>
+                                    </h5>
+                                </div>
+                                <div id="collapse12" class="collapse" aria-labelledby="heading12" data-parent="#accordion">
+                                    <div class="card-body">
+                                        La forma más simple de punto muerto se produce cuando dos tareas están esperando que se desbloqueen entre sí. Los puntos muertos más complejos se pueden
+                                        distribuir en un mayor número de tareas. Sin embargo, cuando se produce un punto muerto, un programa no se está ejecutando muy rápidamente, de hecho, no está
+                                        sucediendo nada, todas las tareas se esperan entre sí y la aplicación no está tomando tiempo del procesador.
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card">
+                                <div class="card-header" id="heading13">
+                                    <h5 class="mb-0">
+                                        <button class="btn collapsed text-left " data-toggle="collapse" data-target="#collapse13" aria-expanded="false" aria-controls="collapse13">
+                                            <b>¿Podría hacer que un objeto sea seguro al encerrar el código del cuerpo de todos los métodos en las instrucciones de bloqueo para que todas las acciones del método sean atómicas?</b>
+                                        </button>
+                                    </h5>
+                                </div>
+                                <div id="collapse13" class="collapse" aria-labelledby="heading13" data-parent="#accordion">
+                                    <div class="card-body">
+                                        Hacer todas las llamadas a métodos en un objeto atómico es un enfoque muy duro y peligroso para lograr la seguridad del hilo. Bien puede hacer que una
+                                        aplicación sea vulnerable a puntos muertos y también podría eliminar cualquier ventaja de rendimiento que se obtendría mediante el uso de múltiples
+                                        procesadores. Además, no protege contra problemas causados por el uso de parámetros de referencia a un método.
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card">
+                                <div class="card-header" id="heading14">
+                                    <h5 class="mb-0">
+                                        <button class="btn collapsed text-left " data-toggle="collapse" data-target="#collapse14" aria-expanded="false" aria-controls="collapse14">
+                                            Si no está seguro acerca de las posibles condiciones de carrera, <b>¿es mejor agregar declaraciones de bloqueo alrededor de las secciones críticas de su código "por si acaso"?</b>
+                                        </button>
+                                    </h5>
+                                </div>
+                                <div id="collapse14" class="collapse" aria-labelledby="heading14" data-parent="#accordion">
+                                    <div class="card-body">
+                                        Agregar declaraciones de bloqueo alrededor de partes críticas del código sin pensar en lo que el código realmente hace es muy peligroso. Puede conducir
+                                        a cuellos de botella y puntos muertos de rendimiento. Es muy difícil agregar seguridad de subprocesos a un programa una vez que se ha escrito. La única forma
+                                        segura que he encontrado de escribir código seguro para subprocesos es diseñarlo de esa manera desde el principio.
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card">
+                                <div class="card-header" id="heading15">
+                                    <h5 class="mb-0">
+                                        <button class="btn collapsed text-left " data-toggle="collapse" data-target="#collapse15" aria-expanded="false" aria-controls="collapse15">
+                                            <b>¿Debería una tarea generar siempre una excepción si se cancela?</b>
+                                        </button>
+                                    </h5>
+                                </div>
+                                <div id="collapse15" class="collapse" aria-labelledby="heading15" data-parent="#accordion">
+                                    <div class="card-body">
+                                        Una tarea puede cancelarse "en silencio", en cuyo caso simplemente finalizará. Alternativamente, se puede hacer que genere una excepción cuando se 
+                                        cancela. Desde una perspectiva de diseño, tiendo a considerar la cancelación de una tarea como una acción excepcional y, por lo tanto, esperaría que 
+                                        haya alguna forma de propagar este evento a través del sistema para que pueda registrarse de alguna manera.
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card">
+                                <div class="card-header" id="heading16">
+                                    <h5 class="mb-0">
+                                        <button class="btn collapsed text-left " data-toggle="collapse" data-target="#collapse16" aria-expanded="false" aria-controls="collapse16">
+                                            <b>¿Podría hacer una aplicación que cancele automáticamente los procesos de punto muerto?</b>
+                                        </button>
+                                    </h5>
+                                </div>
+                                <div id="collapse16" class="collapse" aria-labelledby="heading16" data-parent="#accordion">
+                                    <div class="card-body">
+                                        Si utiliza la construcción Monitor para gestionar la entrada en acciones atómicas, es posible que una tarea retenga el control cuando no logra bloquear y entrar una acción
+                                        atómica. Incluso puede establecer un tiempo de espera agregando un valor de tiempo de espera a una llamada del método TryEnter para intentar ingresar una acción atómica.
+                                        Por lo tanto, sería posible que un programa reconozca que un bloqueo dado no estuvo disponible durante más de un cierto período de tiempo. Luego podría usar un token de
+                                        cancelación para intentar detener una tarea que podría haber obtenido el objeto de sincronización. Por supuesto, esto solo funcionaría correctamente si la tarea que está
+                                        causando el punto muerto está verificando su token de cancelación mientras espera su bloqueo. En otras palabras, sí, sería posible hacer esto, pero implicaría mucho trabajo
+                                        extra. La mejor manera de evitar puntos muertos es asegurarse de que no estén presentes en el diseño de su sistema.
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                        <br />
+                    </ul>
+                    <h6>Flujo del programa</h6>
+                    <ul>
+                        <li>
+                            El lenguaje C# proporciona construcciones que el programador puede usar para administrar el flujo de ejecución del programa. Las declaraciones pueden
+                            repetirse un número dado de veces, hasta que se haya alcanzado un estado específico, o sobre una colección de artículos. Las declaraciones pueden ejecutarse
+                            condicionalmente usando la construcción if, o seleccionarse sobre la base de una variable de control particular en el caso de un interruptor.
+                        </li>
+                        <li>
+                            Aquí hay algunas preguntas que le gustaría tener en cuenta:
+                        </li>
+
+                        <div id="accordion">
+                            <div class="card">
+                                <div class="card-header" id="heading11">
+                                    <h5 class="mb-0">
+                                        <button class="btn collapsed text-left " data-toggle="collapse" data-target="#collapse11" aria-expanded="false" aria-controls="collapse11">
+                                            <b>¿Es necesario tener la construcción de bucles while y do-while?</b>
+                                        </button>
+                                    </h5>
+                                </div>
+                                <div id="collapse11" class="collapse" aria-labelledby="heading11" data-parent="#accordion">
+                                    <div class="card-body">
+                                        Las construcciones de bucle while y do-while difieren en un solo aspecto. La construcción while no ejecutará ningún código si la condición de control es
+                                        falsa, mientras que la construcción do-while prueba la condición de control al finalizar el ciclo, por lo que el código controlado por él siempre se ejecuta
+                                        una vez, incluso si la condición de control es falsa al principio. A expensas de un programa un poco más complicado, es posible usar solo una forma de
+                                        construcción de bucle, ambas se proporcionan para facilitar un poco la vida de los programadores.
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card">
+                                <div class="card-header" id="heading17">
+                                    <h5 class="mb-0">
+                                        <button class="btn collapsed text-left " data-toggle="collapse" data-target="#collapse17" aria-expanded="false" aria-controls="collapse17">
+                                            <b>¿Es una declaración de interrupción la única forma de salir de un ciclo antes de que se complete?</b>
+                                        </button>
+                                    </h5>
+                                </div>
+                                <div id="collapse17" class="collapse" aria-labelledby="heading17" data-parent="#accordion">
+                                    <div class="card-body">
+                                        Si se usa una pausa en un bucle, el programa saldrá del bucle en ese punto. También es posible salir de un bucle volviendo del método en el que se declara
+                                        el bucle. Finalmente, un programa saldrá de un ciclo si arroja una excepción dentro del ciclo.
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card">
+                                <div class="card-header" id="heading18">
+                                    <h5 class="mb-0">
+                                        <button class="btn collapsed text-left " data-toggle="collapse" data-target="#collapse18" aria-expanded="false" aria-controls="collapse18">
+                                            <b>¿Puedes identificar una situación en la que usarías un bucle for para recorrer una colección en lugar de un bucle foreach?</b>
+                                        </button>
+                                    </h5>
+                                </div>
+                                <div id="collapse18" class="collapse" aria-labelledby="heading18" data-parent="#accordion">
+                                    <div class="card-body">
+                                        Una construcción foreach proporciona una forma muy conveniente de expresar la necesidad de enumerar cada uno de los elementos de una colección. Sin
+                                        embargo, cada elemento enumerado se proporciona como "solo lectura". Si el programa quiere cambiar el valor de un elemento enumerado, es necesario utilizar
+                                        un bucle for para acceder a cada elemento. Tenga en cuenta que si la construcción foreach está iterando a través de una colección de tipos de referencia, es
+                                        perfectamente permisible cambiar las propiedades de cada elemento iterado.
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card">
+                                <div class="card-header" id="heading19">
+                                    <h5 class="mb-0">
+                                        <button class="btn collapsed text-left " data-toggle="collapse" data-target="#collapse19" aria-expanded="false" aria-controls="collapse19">
+                                            El operador lógico y (&) y el operador lógico o (|) tienen versiones de "cortocircuito" (&& y ||), que solo evalúan elementos hasta que se pueda 
+                                            determinar si una expresión dada es verdadera o falsa. <b>¿Por qué el operador exclusivo o (^) no tiene una versión de cortocircuito?</b>
+                                        </button>
+                                    </h5>
+                                </div>
+                                <div id="collapse19" class="collapse" aria-labelledby="heading19" data-parent="#accordion">
+                                    <div class="card-body">
+                                        No existe una versión de cortocircuito del operador exclusivo u porque no es posible determinar si es exclusivo o verdadero simplemente examinando uno de
+                                        los operandos. Recuerde que una operación exclusiva u devuelve verdadero si los dos operandos son diferentes. No es posible hacer esta determinación
+                                        simplemente examinando uno de los operandos.
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card">
+                                <div class="card-header" id="heading20">
+                                    <h5 class="mb-0">
+                                        <button class="btn collapsed text-left " data-toggle="collapse" data-target="#collapse20" aria-expanded="false" aria-controls="collapse20">
+                                            <b>¿Es cierto que cada operador de C# tiene un comportamiento que es el mismo para cada contexto en el que se utiliza?</b>
+                                        </button>
+                                    </h5>
+                                </div>
+                                <div id="collapse20" class="collapse" aria-labelledby="heading20" data-parent="#accordion">
+                                    <div class="card-body">
+                                        No. Los operadores de C # tienen comportamientos diferentes según el contexto en el que se utilizan. Los tipos enteros y de coma flotante se mantienen de
+                                        maneras muy diferentes en la memoria de la computadora. Cuando se utilizan operadores aritméticos entre estos tipos, el compilador seleccionará el operador
+                                        correcto que se utilizará según el tipo de operandos en la expresión.
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card">
+                                <div class="card-header" id="heading21">
+                                    <h5 class="mb-0">
+                                        <button class="btn collapsed text-left " data-toggle="collapse" data-target="#collapse21" aria-expanded="false" aria-controls="collapse21">
+                                            <b>¿Siempre puede estar seguro de la secuencia precisa de operaciones cuando se evalúa una expresión?</b>
+                                        </button>
+                                    </h5>
+                                </div>
+                                <div id="collapse21" class="collapse" aria-labelledby="heading21" data-parent="#accordion">
+                                    <div class="card-body">
+                                        El compilador de C# garantiza que las expresiones se evaluarán de acuerdo con las reglas de precedencia y asociabilidad para los operadores en la
+                                        expresión. Sin embargo, la secuencia precisa en la que se realizan las operaciones no es algo sobre lo que un programador pueda hacer suposiciones.
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                        <br />
+
+                    </ul>
+                    <h6>Eventos y devoluciones de llamada</h6>
+                    <ul>
+                        <li>
+                            Los programadores pueden usar delegados para crear aplicaciones a partir de objetos "poco acoplados" que se comunican por eventos de mensaje. Un objeto puede
+                            suscribirse a eventos publicados por otro objeto que expone a un delegado.
+                        </li>
+                        <li>
+                            Una expresión lambda se puede usar para crear "funciones anónimas" que existen como comportamientos puros. Se puede hacer que los delegados se refieran a
+                            funciones anónimas.
+                        </li>
+                        <li>
+                            Aquí hay algunas preguntas que le gustaría considerar:
+                        </li>
+                        <li class="segundo">
+                            ¿Cómo funciona realmente un delegado?
+                        </li>
+                        <li class="segundo">
+                            ¿Qué sucede si un delegado es asignado a un delegado?
+                        </li>
+                        <li class="segundo">
+                            ¿Qué sucede si un delegado se asigna a sí mismo?
+                        </li>
+                        <li class="segundo">
+                            ¿Existe un límite superior para el número de suscriptores que puede tener un delegado de editor?
+                        </li>
+                        <li class="segundo">
+                            ¿Qué hace realmente el operador lambda (=>)?
+                        </li>
+                        <li class="segundo">
+                            ¿Puede el código en una expresión lambda acceder a los datos del código adjunto?
+                        </li>
+                    </ul>
+                    <h6>Excepciones</h6>
+                    <ul>
+                        <li>
+                            Las excepciones son una parte importante del desarrollo de aplicaciones. Como mínimo, una aplicación tendrá que manejar excepciones que pueden ser producidas
+                            por los métodos .NET que utiliza. Para una aplicación grande, es posible que deba diseñar tipos de excepción personalizados y crear una estrategia de manejo
+                            de errores que administre cómo se propagan y administran las excepciones. Es importante poner las excepciones en la perspectiva correcta; cualquier error con
+                            el que espere que el sistema se ocupe en el curso normal de los eventos no debe manejarse mediante el uso de una excepción, deben reservarse para situaciones
+                            en las que no es significativo que la aplicación continúe.
+                        </li>
+                        <li>
+                            Aquí hay algunas preguntas que le gustaría considerar:
+                        </li>
+                        <li class="segundo">
+                            ¿Es un método que recibe una fecha del "31 de febrero" algo que debería causar una excepción?
+                        </li>
+                        <li class="segundo">
+                            ¿Debo asegurarme de que mi programa siempre capture todas las excepciones?
+                        </li>
+                        <li class="segundo">
+                            ¿Puede volver al código después de que se haya detectado una excepción?
+                        </li>
+                        <li class="segundo">
+                            ¿Por qué necesitamos la cláusula finalmente? ¿No se puede ejecutar el código después del código en una cláusula de prueba simplemente después del final de la captura?
+                        </li>
+                        <li class="segundo">
+                            ¿Mi aplicación siempre debe usar excepciones personalizadas?
+                        </li>
+                    </ul>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
